@@ -58,7 +58,8 @@ class DistributorController extends Controller
         $fields = request()->only(array_keys($validations));
 
         $fields['code'] = Distributor::generateCode();
-        Distributor::create($fields);
+        $distributor = Distributor::create($fields);
+        $distributor->memberSync($request->members);
 
         return Redirect::route('distributors.index');
     }
@@ -78,7 +79,7 @@ class DistributorController extends Controller
     {
         $this->authorize('distributor_edit');
 
-        $distributor = Distributor::findOrFail($id);
+        $distributor = Distributor::with(['members'])->findOrFail($id);
         return Inertia::render('Distributor/Edit', [
             'distributor' => $distributor,
             'status' => session('status'),
@@ -97,6 +98,7 @@ class DistributorController extends Controller
 
         $distributor = Distributor::findOrFail($id);
         $distributor->update($fields);
+        $distributor->memberSync($request->members);
 
         return Redirect::route('distributors.index');
     }

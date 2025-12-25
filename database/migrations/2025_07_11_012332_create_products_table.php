@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('name', 200);
             $table->string('img')->nullable();
             $table->double('purchase_price')->default(0);
+            $table->double('packing_price')->default(0);
+            $table->double('other_price')->default(0);  
+            $table->double('base_production_price')->default(0);
             $table->double('exterior_production_price')->default(0);
             $table->double('interior_production_price')->default(0);
             $table->double('price')->default(0);

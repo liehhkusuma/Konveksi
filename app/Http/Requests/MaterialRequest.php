@@ -15,9 +15,10 @@ class MaterialRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'material_category_id' => ['required'],
-            'distributor_id' => ['required'],
-            'measurement_id' => ['required'],
+            // 'material_category_id' => ['required'],
+            'distributor_id' => ['required', 'exists:distributors,id'],
+            'measurement_id' => ['required', 'exists:measurements,id'],
+            'category' => ['required', 'in:accessory,default'],
             'name' => ['required', 'string', 'max:150'],
             'price' => ['required', 'numeric', 'min:0'],
             'is_active' => ['required'],

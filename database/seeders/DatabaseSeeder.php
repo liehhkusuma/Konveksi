@@ -20,6 +20,9 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             EmployeeSeeder::class,
             ConfigurationSeeder::class,
+            DistributorSeeder::class,
+            MaterialSeeder::class,
+            ProductSeeder::class,
         ]);
     }
 }

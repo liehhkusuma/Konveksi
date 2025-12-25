@@ -6,44 +6,43 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Product extends Model
+class Purchase extends Model
 {
     use HasFactory;
 
     protected function casts(): array
     {
         return [
-            'purchase_price' => 'double',
-            'exterior_production_price' => 'double',
-            'interior_production_price' => 'double',
-            'price' => 'double',
-            'is_active' => 'integer',
+            'discount' => 'double',
+            'discount_amount' => 'double',
+            'ppn' => 'double',
+            'pph' => 'double',
+            'sub_price' => 'double',
+            'total_price' => 'double',
+            'distributor_id' => 'integer',
+            'created_by' => 'integer',
+            'updated_by' => 'integer',
         ];
     }
 
     protected $fillable  = [
+        'distributor_id',
         'code',
-        'name',
-        'img',
-        'purchase_price',
-        'packing_price',
-        'other_price',
-        'base_production_price',
-        'exterior_production_price',
-        'interior_production_price',
-        'price',
-        'is_active',
-        'desc',
+        'purchase_date',
+        'discount',
+        'discount_amount',
+        'ppn',
+        'pph',
+        'sub_price',
+        'total_price',
+        'notes',
+        'created_by',
+        'updated_by',
     ];
-
-    public static function scopeActive($query)
-    {
-        return $query->where('is_active', true);
-    }
 
     public function materials()
     {
-        return $this->hasMany(ProductMaterial::class);
+        return $this->hasMany(PurchaseMaterial::class);
     }
 
     function materialSync($materials)
@@ -54,10 +53,11 @@ class Product extends Model
             $this->materials()->create([
                 'material_id' => $material['material_id'],
                 'measurement_id' => $material['measurement_id'],
+                'material' => $material['material'],
+                'measurement' => $material['measurement'],
                 'quantity' => $material['quantity'],
                 'price' => $material['price'],
                 'total_price' => $material['price'] * $material['quantity'],
-                'notes' => $material['notes'],
             ]);
         }
     }
@@ -67,7 +67,7 @@ class Product extends Model
         $latest = Product::latest()->first();
         $count = $latest->id ?? 0;
         $uniqueId = str_pad($count + 1, 4, '0', STR_PAD_LEFT);
-        $code = 'PRD' . $uniqueId;
+        $code = 'PRC' . $uniqueId;
         return $code;
     }
 }

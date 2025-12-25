@@ -30,6 +30,23 @@ class Distributor extends Model
         return $query->where('is_active', true);
     }
 
+    public function members()
+    {
+        return $this->hasMany(DistributorMember::class);
+    }
+
+    function memberSync($members)
+    {
+        $this->members()->delete();
+
+        foreach ($members as $member) {
+            $this->members()->create([
+                'name' => $member['name'],
+                'phone' => $member['phone'],
+            ]);
+        }
+    }
+
     public static function generateCode()
     {
         $latest = Distributor::latest()->first();

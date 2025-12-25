@@ -17,10 +17,13 @@ class EmployeeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'position_id' => ['required'],
+            // 'position_id' => ['required'],
             'name' => ['required', 'string', 'max:150'],
+            'category' => ['required', 'in:daily,project'],
+            'type' => ['required', 'in:exterior,interior,default'],
             'phone' => ['required', 'numeric', 'max_digits:15'],
             'cashbon' => ['required', 'numeric', 'min:0'],
+            'salary' => ['required_if:category,daily', 'numeric', 'min:0'],
             'is_active' => ['required'],
             'address' => ['nullable'],
         ];

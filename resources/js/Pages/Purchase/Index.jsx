@@ -15,11 +15,13 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { Divider, TextField } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import { useTheme } from '@mui/material/styles';
 
 // third-party
 import { DndProvider } from 'react-dnd';
+import { parseISO, format } from 'date-fns';
 import { isMobile } from 'react-device-detect';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
@@ -49,11 +51,11 @@ import IconButton from '@/components/@extended/IconButton';
 import LinearWithLabel from '@/components/@extended/progress/LinearWithLabel';
 import { CSVExport, DraggableRow } from '@/components/third-party/react-table';
 import AuthenticatedLayout from '@/layouts/Dashboard';
-import AlertMaterialDelete from './Modal/AlertMaterialDelete';
+import AlertPurchaseDelete from './Modal/AlertPurchaseDelete';
 import { ThemeMode } from '@/types/config';
 
 // assets
-import { Add, Layer, Eye, Edit, Note, Send, TickCircle, Trash } from 'iconsax-react';
+import { Add, CloseCircle, Eye, Edit, Note, Send, TickCircle, Trash } from 'iconsax-react';
 
 import { ImagePath, getImageUrl } from '@/utils/getImageUrl';
 
@@ -70,20 +72,20 @@ function ReactTable({ defaultColumns, defaultData }) {
 
     const handleSearch = (event) => {
         setGlobalFilter(event?.target.value)
-        router.get(route('materials.index'), { search: event?.target.value }, { preserveState: true });
+        router.get(route('purchases.index'), { search: event?.target.value }, { preserveState: true });
     };
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
-        router.get(route('materials.index'), { page: newPage }, { preserveState: true });
+        router.get(route('purchases.index'), { page: newPage }, { preserveState: true });
     };
 
     useEffect(() => {
         setData([...defaultData.data]);
     }, [defaultData.data]);
 
-    const rematerialRow = (draggedRowIndex, targetRowIndex) => {
+    const repurchaseRow = (draggedRowIndex, targetRowIndex) => {
         data.splice(targetRowIndex, 0, data.splice(draggedRowIndex, 1)[0]);
-        router.post(route('materials.sort'), { materials: data }, { preserveState: true });
+        router.post(route('purchases.sort'), { purchases: data }, { preserveState: true });
     };
 
     const table = useReactTable({
@@ -118,10 +120,10 @@ function ReactTable({ defaultColumns, defaultData }) {
                     />
 
                     <Stack direction="row" alignItems="center" spacing={2}>
-                        {auth.can.material_create ? (<Button variant="contained" startIcon={<Add />} onClick={() => {
-                            router.get(route('materials.create'))
+                        {auth.can.purchase_create ? (<Button variant="contained" startIcon={<Add />} onClick={() => {
+                            router.get(route('purchases.create'))
                         }} size="large">
-                            Add Material
+                            Add Purchase
                         </Button>) : null}
                     </Stack>
                 </Stack>
@@ -173,7 +175,7 @@ function ReactTable({ defaultColumns, defaultData }) {
 
 // ==============================|| ROW - DRAG & DROP ||============================== //
 
-export default function RowDragDrop({ materials }) {
+export default function RowDragDrop({ purchases }) {
     const { auth, ziggy } = usePage().props;
     const urlUploads = ziggy.uploads;
     const theme = useTheme();
@@ -208,39 +210,24 @@ export default function RowDragDrop({ materials }) {
 
     const defaultColumns = [
         {
-            id: 'distributor',
-            header: 'Distributor',
-            accessorKey: 'distributor.name'
+            id: 'code',
+            header: 'Code',
+            accessorKey: 'code'
         },
         {
-            id: 'category',
-            header: 'Category',
-            accessorKey: 'category'
-        },
-        {
-            id: 'name',
-            header: 'Name',
-            accessorKey: 'name'
-        },
-        {
-            id: 'price',
-            header: 'Price',
-            accessorKey: 'price',
-            cell: ({ row }) => {
-                return formatter.format(row.original.price) + ' /' + row.original.measurement.abbreviation;
+            id: 'purchase_date',
+            header: 'Purchase date',
+            accessorKey: 'purchase_date',
+            cell: (props) => {
+                return format(parseISO(props.getValue()), 'dd MMMM yyyy');
             }
         },
         {
-            id: 'is_active',
-            header: 'status',
-            accessorKey: 'is_active',
-            cell: (props) => {
-                switch (props.getValue()) {
-                    case (1 || '1'):
-                        return <Chip color="success" label="Active" size="small" variant="light" />;
-                    default:
-                        return <Chip color="error" label="Inactive" size="small" variant="light" />;
-                }
+            id: 'total_price',
+            header: 'Total Purchase',
+            accessorKey: 'total_price',
+            cell: ({ row }) => {
+                return formatter.format(row.original.total_price);
             }
         },
         {
@@ -248,7 +235,7 @@ export default function RowDragDrop({ materials }) {
             header: 'Actions',
             cell: ({ row }) => (
                 <Stack direction="row" spacing={1} alignItems="center">
-                    {auth.can.material_edit ? (<Tooltip
+                    {auth.can.purchase_edit ? (<Tooltip
                         componentsProps={{
                             tooltip: {
                                 sx: {
@@ -262,13 +249,13 @@ export default function RowDragDrop({ materials }) {
                         <IconButton
                             color="primary"
                             onClick={() => {
-                                router.get(route('materials.edit', { material: row.original?.id }));
+                                router.get(route('purchases.edit', { purchase: row.original?.id }));
                             }}
                         >
                             <Edit />
                         </IconButton>
                     </Tooltip>) : null}
-                    {auth.can.material_destroy ? (<Tooltip
+                    {/* {auth.can.purchase_destroy ? (<Tooltip
                         componentsProps={{
                             tooltip: {
                                 sx: {
@@ -290,7 +277,7 @@ export default function RowDragDrop({ materials }) {
                         >
                             <Trash />
                         </IconButton>
-                    </Tooltip>) : null}
+                    </Tooltip>) : null} */}
                 </Stack>
             ),
             meta: {
@@ -304,16 +291,16 @@ export default function RowDragDrop({ materials }) {
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Material
+                    Purchase
                 </h2>
             }
         >
-            <Head title="Backoffice Material" />
-            <MainCard title="Material">
+            <Head title="Backoffice Purchase" />
+            <MainCard title="Purchase">
                 <DndProvider backend={isMobile ? TouchBackend : HTML5Backend}>
-                    <ReactTable {...{ defaultColumns, defaultData: materials }} />
+                    <ReactTable {...{ defaultColumns, defaultData: purchases }} />
                 </DndProvider>
-                <AlertMaterialDelete id={Number(resourceDeleteId)} title={resourceDeleteTitle} open={open} handleClose={handleClose} />
+                <AlertPurchaseDelete id={Number(resourceDeleteId)} title={resourceDeleteTitle} open={open} handleClose={handleClose} />
             </MainCard>
         </AuthenticatedLayout>
     );

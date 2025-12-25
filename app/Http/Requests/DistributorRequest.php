@@ -20,6 +20,9 @@ class DistributorRequest extends FormRequest
             'phone' => ['required', 'string', 'max:15'],
             'address' => ['nullable', 'string'],
             'is_active' => ['required'],
+            'members'   => 'required|array|min:1',
+            'members.*.name' => 'required|string|max:150',
+            'members.*.phone' => 'required|string|max:15',
         ];
     }
 }

@@ -2,33 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProductRequest;
+use App\Http\Requests\PurchaseRequest;
 use App\Models\Configuration;
+use App\Models\Distributor;
 use App\Models\Material;
 use App\Models\Measurement;
-use App\Models\OrderProduct;
-use App\Models\Product;
+use App\Models\OrderPurchase;
+use App\Models\Purchase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
-class ProductController extends Controller
+class PurchaseController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $this->authorize('product_view');
+        $this->authorize('purchase_view');
         $pagination = Configuration::getValueAttribute('pagination', 10);
 
         $search = $request->query('search');
-        $products = Product::when($search, function ($query, $search) {
-            $query->where('name', 'like', "%$search%");
+        $purchases = Purchase::when($search, function ($query, $search) {
+            $query->where('code', 'like', "%$search%");
         })->paginate($pagination);
 
-        return Inertia::render('Product/Index', [
-            'products' => $products,
+        return Inertia::render('Purchase/Index', [
+            'purchases' => $purchases,
             'status' => session('status'),
         ]);
     }
@@ -38,32 +39,34 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $this->authorize('product_create');
+        $this->authorize('purchase_create');
 
         $materials  = Material::active()->get();
         $measurements  = Measurement::active()->get();
-        return Inertia::render('Product/Create', [
+        $distributors  = Distributor::active()->get();
+        return Inertia::render('Purchase/Create', [
             'status' => session('status'),
             'materials' => $materials,
             'measurements' => $measurements,
+            'distributors' => $distributors,
         ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ProductRequest $request)
+    public function store(PurchaseRequest $request)
     {
-        $this->authorize('product_create');
+        $this->authorize('purchase_create');
 
         $validations = $request->validated();
         $fields = request()->only(array_keys($validations));
 
-        $fields['code'] = Product::generateCode();
-        $product = Product::create($fields);
-        $product->materialSync($request->materials ?? []);
+        $fields['code'] = Purchase::generateCode();
+        $purchase = Purchase::create($fields);
+        $purchase->materialSync($request->materials ?? []);
 
-        return Redirect::route('products.index');
+        return Redirect::route('purchases.index');
     }
 
     /**
@@ -79,34 +82,36 @@ class ProductController extends Controller
      */
     public function edit(string $id)
     {
-        $this->authorize('product_edit');
+        $this->authorize('purchase_edit');
 
-        $product = Product::with(['materials'])->findOrFail($id);
+        $purchase = Purchase::with(['materials'])->findOrFail($id);
         $materials  = Material::active()->get();
         $measurements  = Measurement::active()->get();
-        return Inertia::render('Product/Edit', [
+        $distributors  = Distributor::active()->get();
+        return Inertia::render('Purchase/Edit', [
             'status' => session('status'),
-            'product' => $product,
+            'purchase' => $purchase,
             'materials' => $materials,
             'measurements' => $measurements,
+            'distributors' => $distributors,
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(ProductRequest $request, string $id)
+    public function update(PurchaseRequest $request, string $id)
     {
-        $this->authorize('product_edit');
+        $this->authorize('purchase_edit');
 
         $validations = $request->validated();
         $fields = request()->only(array_keys($validations));
 
-        $product = Product::findOrFail($id);
-        $product->update($fields);
-        $product->materialSync($request->materials ?? []);
+        $purchase = Purchase::findOrFail($id);
+        $purchase->update($fields);
+        $purchase->materialSync($request->materials ?? []);
 
-        return Redirect::route('products.index');
+        return Redirect::route('purchases.index');
     }
 
     /**
@@ -114,11 +119,11 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        $this->authorize('product_destroy');
+        $this->authorize('purchase_destroy');
 
-        $product = Product::findOrFail($id);
+        $purchase = Purchase::findOrFail($id);
 
-        $product->delete();
-        return Redirect::route('products.index');
+        $purchase->delete();
+        return Redirect::route('purchases.index');
     }
 }

@@ -13,18 +13,21 @@ return new class extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('position_id');
+            // $table->unsignedBigInteger('position_id');
             $table->string('code', 50);
             $table->string('name');
+            $table->enum('category', ['daily', 'project'])->default('daily');
+            $table->enum('type', ['exterior', 'interior', 'default'])->default('default');
             $table->string('phone', 20)->nullable();
             $table->mediumText('address')->nullable();
             $table->double('cashbon')->default(0);
+            $table->double('salary')->default(0);
             $table->boolean('is_active')->default(true);
 
-            $table->foreign('position_id')
-                ->references('id')
-                ->on('positions')
-                ->onDelete('cascade');
+            // $table->foreign('position_id')
+            //     ->references('id')
+            //     ->on('positions')
+            //     ->onDelete('cascade');
 
             $table->timestamps();
         });

@@ -26,7 +26,7 @@ class MaterialController extends Controller
         $pagination = Configuration::getValueAttribute('pagination', 10);
 
         $search = $request->query('search');
-        $materials = Material::with(['category', 'distributor', 'measurement'])->when($search, function ($query, $search) {
+        $materials = Material::with(['distributor', 'measurement'])->when($search, function ($query, $search) {
             $query->where('name', 'like', "%$search%");
         })->paginate($pagination);
 
@@ -43,11 +43,11 @@ class MaterialController extends Controller
     {
         $this->authorize('material_create');
 
-        $categories = MaterialCategory::active()->get();
+        // $categories = MaterialCategory::active()->get();
         $distributors = Distributor::active()->get();
         $measurements = Measurement::active()->get();
         return Inertia::render('Material/Create', [
-            'categories' => $categories,
+            // 'categories' => $categories,
             'distributors' => $distributors,
             'measurements' => $measurements,
             'status' => session('status'),
@@ -86,12 +86,12 @@ class MaterialController extends Controller
         $this->authorize('material_edit');
 
         $material = Material::findOrFail($id);
-        $categories = MaterialCategory::active()->get();
+        // $categories = MaterialCategory::active()->get();
         $distributors = Distributor::active()->get();
         $measurements = Measurement::active()->get();
         return Inertia::render('Material/Edit', [
             'material' => $material,
-            'categories' => $categories,
+            // 'categories' => $categories,
             'distributors' => $distributors,
             'measurements' => $measurements,
             'status' => session('status'),

@@ -11,6 +11,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\MeasurementController;
+use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\UserAccountController;
 use App\Http\Controllers\VendorController;
@@ -77,6 +78,9 @@ Route::prefix('backend')->middleware('auth')->group(function () {
         return Redirect::route('dashboard');
     });
     Route::resource('sellers', SellerController::class)->missing(function (Request $request) {
+        return Redirect::route('dashboard');
+    });
+    Route::resource('purchases', PurchaseController::class)->missing(function (Request $request) {
         return Redirect::route('dashboard');
     });
 });

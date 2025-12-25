@@ -12,25 +12,29 @@ class Employee extends Model
     protected function casts(): array
     {
         return [
-            'position_id' => 'integer',
+            // 'position_id' => 'integer',
             'cashbon' => 'double',
+            'salary' => 'double',
         ];
     }
 
     protected $fillable  = [
-        'position_id',
-        'name',
+        // 'position_id',
         'code',
+        'name',
+        'category',
+        'type',
         'phone',
         'cashbon',
+        'salary',
         'address',
         'is_active',
     ];
 
-    public function position()
-    {
-        return $this->belongsTo(Position::class, 'position_id');
-    }
+    // public function position()
+    // {
+    //     return $this->belongsTo(Position::class, 'position_id');
+    // }
 
     public static function scopeActive($query)
     {

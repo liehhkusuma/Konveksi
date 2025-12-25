@@ -11,25 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('materials', function (Blueprint $table) {
+        Schema::create('purchase_materials', function (Blueprint $table) {
             $table->id();
-            // $table->unsignedBigInteger('material_category_id')->nullable();
-            $table->unsignedBigInteger('distributor_id')->nullable();
+            $table->unsignedBigInteger('purchase_id')->nullable();
+            $table->unsignedBigInteger('material_id')->nullable();
             $table->unsignedBigInteger('measurement_id')->nullable();
-            $table->string('code', 50)->unique();
-            $table->enum('category', ['default', 'accessory'])->default('default');
-            $table->string('name', 150)->nullable();
+            $table->string('material', 150)->nullable();
+            $table->string('measurement', 150)->nullable();
+            $table->double('quantity')->default(0);
             $table->double('price')->default(0);
-            $table->boolean('is_active')->default(true);
+            $table->double('total_price')->default(0);
 
-            // $table->foreign('material_category_id')
-            //     ->references('id')
-            //     ->on('material_categories')
-            //     ->onDelete('cascade');
-
-            $table->foreign('distributor_id')
+            $table->foreign('purchase_id')
                 ->references('id')
-                ->on('distributors')
+                ->on('purchases')
+                ->onDelete('cascade');
+
+            $table->foreign('material_id')
+                ->references('id')
+                ->on('materials')
                 ->onDelete('cascade');
 
             $table->foreign('measurement_id')
@@ -46,6 +46,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('materials');
+        Schema::dropIfExists('purchase_materials');
     }
 };

@@ -15,9 +15,13 @@ class ProductSeeder extends Seeder
         Product::query()->delete();
 
         $products = [
-            ['id' => 1, 'code' => 'PRD1' . time(), 'name' => 'Pintu', 'price' => 0],
-            ['id' => 2, 'code' => 'PRD2' . time(), 'name' => 'Jendela', 'price' => 0],
-            ['id' => 3, 'code' => 'PRD3' . time(), 'name' => 'Fasad', 'price' => 0],
+            [
+                'id' => 1,
+                'code' => 'PRD1' . time(),
+                'name' => 'Tas Polos',
+                'purchase_price' => 15000,
+                'price' => 20000,
+            ],
         ];
 
         // generate
@@ -26,7 +30,16 @@ class ProductSeeder extends Seeder
             if ($exist) {
                 $exist->update($product);
             } else {
-                Product::create($product);
+                $product = Product::create($product);
+                $product->materialSync([
+                    [
+                        'material_id' => 1,
+                        'measurement_id' => 1,
+                        'quantity' => 2,
+                        'price' => 15000,
+                        'notes' => 'Done Payment',
+                    ],
+                ]);
             }
         }
     }

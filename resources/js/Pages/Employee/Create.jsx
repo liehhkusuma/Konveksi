@@ -36,14 +36,16 @@ import { Add, Eye, EyeSlash } from 'iconsax-react';
 
 // ==============================|| USER PROFILE - PERSONAL ||============================== //
 
-export default function Create({ positions }) {
+export default function Create() {
 
     const { data, setData, post, errors, processing, recentlySuccessful } =
         useForm({
-            position_id: '',
+            category: 'daily',
+            type: 'default',
             name: '',
             phone: '',
             cashbon: 0,
+            salary: 0,
             address: '',
             is_active: true,
         });
@@ -77,28 +79,24 @@ export default function Create({ positions }) {
                 <form onSubmit={handleSubmit}>
                     <Box sx={{ p: 2.5 }}>
                         <Grid container spacing={3}>
-
                             <Grid item xs={12} sm={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="position_id" required>Position</InputLabel>
-                                    <Select
-                                        fullWidth
-                                        value={data.position_id}
-                                        name="position_id"
-                                        onChange={(e) => setData('position_id', e.target.value)}
-                                    >
-                                        {positions.map((position, index) => (
-                                            <MenuItem key={index} value={position.id} selected={data.position_id == position.id}>
-                                                {position.name}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
+                                    <InputLabel htmlFor="employee-category">Category</InputLabel>
+                                    <RadioGroup row aria-label="employee-category">
+                                        <FormControlLabel control={<Radio checked={data.category === 'daily'} value={'daily'} onChange={(e) => setData('category', e.target.value)} />} label={'Daily'} />
+                                        <FormControlLabel control={<Radio checked={data.category === 'project'} value={'project'} onChange={(e) => setData('category', e.target.value)} />} label={'Project'} />
+                                    </RadioGroup>
                                 </Stack>
-                                {errors.position_id && (
-                                    <FormHelperText error id="personal-position_id-helper">
-                                        {errors.position_id}
-                                    </FormHelperText>
-                                )}
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Stack spacing={1}>
+                                    <InputLabel htmlFor="material-type">Type</InputLabel>
+                                    <RadioGroup row aria-label="material-type">
+                                        <FormControlLabel control={<Radio checked={data.type === 'default'} value={'default'} onChange={(e) => setData('type', e.target.value)} />} label={'Default'} />
+                                        <FormControlLabel control={<Radio checked={data.type === 'exterior'} value={'exterior'} onChange={(e) => setData('type', e.target.value)} />} label={'Exterior'} />
+                                        <FormControlLabel control={<Radio checked={data.type === 'interior'} value={'interior'} onChange={(e) => setData('type', e.target.value)} />} label={'Interior'} />
+                                    </RadioGroup>
+                                </Stack>
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Stack spacing={1}>
@@ -140,7 +138,7 @@ export default function Create({ positions }) {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="cashbon" required>Cashbon</InputLabel>
+                                    <InputLabel htmlFor="cashbon">Cashbon</InputLabel>
                                     <NumericFormat
                                         thousandSeparator="."
                                         decimalSeparator=","
@@ -167,24 +165,6 @@ export default function Create({ positions }) {
                                 )}
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                                <InputLabel htmlFor="address">Address</InputLabel>
-                                <TextField
-                                    fullWidth
-                                    multiline
-                                    rows={5}
-                                    id="address"
-                                    name="address"
-                                    placeholder="Enter address"
-                                    value={data.address}
-                                    onChange={(e) => setData('address', e.target.value)}
-                                />
-                                {errors.address && (
-                                    <FormHelperText error id="personal-address-helper">
-                                        {errors.address}
-                                    </FormHelperText>
-                                )}
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
                                 <InputLabel htmlFor="is_active">Status</InputLabel>
                                 <Switch
                                     edge="end"
@@ -202,6 +182,54 @@ export default function Create({ positions }) {
                                     </FormHelperText>
                                 )}
                             </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <InputLabel htmlFor="address">Address</InputLabel>
+                                <TextField
+                                    fullWidth
+                                    multiline
+                                    rows={5}
+                                    id="address"
+                                    name="address"
+                                    placeholder="Enter address"
+                                    value={data.address}
+                                    onChange={(e) => setData('address', e.target.value)}
+                                />
+                                {errors.address && (
+                                    <FormHelperText error id="personal-address-helper">
+                                        {errors.address}
+                                    </FormHelperText>
+                                )}
+                            </Grid>
+                            {data.category === 'daily' ? (
+                                <Grid item xs={12} sm={6}>
+                                    <Stack spacing={1}>
+                                        <InputLabel htmlFor="salary" required>Salary</InputLabel>
+                                        <NumericFormat
+                                            thousandSeparator="."
+                                            decimalSeparator=","
+                                            customInput={TextField}
+                                            id="salary"
+                                            value={data.salary}
+                                            name="salary"
+                                            min={0}
+                                            max={100}
+                                            InputProps={{
+                                                startAdornment: 'Rp'
+                                            }}
+                                            onValueChange={(values) => {
+                                                setData('salary', values.floatValue);
+                                            }}
+                                            placeholder="Enter Salary"
+                                            autoFocus
+                                        />
+                                    </Stack>
+                                    {errors.salary && (
+                                        <FormHelperText error id="salary-helper">
+                                            {errors.salary}
+                                        </FormHelperText>
+                                    )}
+                                </Grid>
+                            ) : null}
                         </Grid>
                     </Box>
                     <Divider />

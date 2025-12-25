@@ -12,7 +12,7 @@ class Material extends Model
     protected function casts(): array
     {
         return [
-            'material_category_id' => 'integer',
+            // 'material_category_id' => 'integer',
             'distributor_id' => 'integer',
             'measurement_id' => 'integer',
             'price' => 'double',
@@ -21,10 +21,11 @@ class Material extends Model
     }
 
     protected $fillable  = [
-        'material_category_id',
+        // 'material_category_id',
         'distributor_id',
         'measurement_id',
         'code',
+        'category',
         'name',
         'type',
         'price',
@@ -32,10 +33,10 @@ class Material extends Model
     ];
 
 
-    public function category()
-    {
-        return $this->belongsTo(MaterialCategory::class, 'material_category_id');
-    }
+    // public function category()
+    // {
+    //     return $this->belongsTo(MaterialCategory::class, 'material_category_id');
+    // }
 
     public function distributor()
     {

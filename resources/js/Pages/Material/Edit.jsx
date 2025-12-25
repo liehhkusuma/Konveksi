@@ -28,10 +28,9 @@ import { Transition } from '@headlessui/react';
 export default function PageEdit({ categories, distributors, measurements, material }) {
     const { data, setData, patch, errors, processing, recentlySuccessful } =
         useForm({
-            material_category_id: material.material_category_id,
             distributor_id: material.distributor_id,
             measurement_id: material.measurement_id,
-            type: material.type,
+            category: material.category,
             name: material.name,
             price: material.price,
             is_active: material.is_active ? true : false,
@@ -58,28 +57,6 @@ export default function PageEdit({ categories, distributors, measurements, mater
                         <Grid container spacing={3}>
                             <Grid item xs={12} sm={6}>
                                 <Stack spacing={0}>
-                                    <InputLabel htmlFor="material_category_id" required>Category</InputLabel>
-                                    <Select
-                                        fullWidth
-                                        value={data.material_category_id}
-                                        name="material_category_id"
-                                        onChange={(e) => setData('material_category_id', e.target.value)}
-                                    >
-                                        {categories.map((category, index) => (
-                                            <MenuItem key={index} value={category.id} selected={data.material_category_id == category.id}>
-                                                {category.name}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </Stack>
-                                {errors.material_category_id && (
-                                    <FormHelperText error id="material_category_id-helper">
-                                        {errors.material_category_id}
-                                    </FormHelperText>
-                                )}
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <Stack spacing={0}>
                                     <InputLabel htmlFor="distributor_id" required>Distributor</InputLabel>
                                     <Select
                                         fullWidth
@@ -99,6 +76,15 @@ export default function PageEdit({ categories, distributors, measurements, mater
                                         {errors.distributor_id}
                                     </FormHelperText>
                                 )}
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Stack spacing={1}>
+                                    <InputLabel htmlFor="material-category">Category</InputLabel>
+                                    <RadioGroup row aria-label="material-category">
+                                        <FormControlLabel control={<Radio checked={data.category === 'default'} value={'default'} onChange={(e) => setData('category', e.target.value)} />} label={'Default'} />
+                                        <FormControlLabel control={<Radio checked={data.category === 'accessory'} value={'accessory'} onChange={(e) => setData('category', e.target.value)} />} label={'Accessory'} />
+                                    </RadioGroup>
+                                </Stack>
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Stack spacing={0}>

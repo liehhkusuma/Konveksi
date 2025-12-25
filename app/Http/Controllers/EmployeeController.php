@@ -23,7 +23,7 @@ class EmployeeController extends Controller
         $pagination = Configuration::getValueAttribute('pagination', 10);
 
         $search = $request->query('search');
-        $employees = Employee::with(['position'])->when($search, function ($query, $search) {
+        $employees = Employee::when($search, function ($query, $search) {
             $query->where('name', 'like', "%$search%");
         })->paginate($pagination);
 
@@ -40,9 +40,7 @@ class EmployeeController extends Controller
     {
         $this->authorize('employee_create');
 
-        $positions = Position::active()->get(['id', 'name']);
         return Inertia::render('Employee/Create', [
-            'positions' => $positions,
             'status' => session('status'),
         ]);
     }
@@ -78,11 +76,9 @@ class EmployeeController extends Controller
     {
         $this->authorize('employee_edit');
 
-        $positions = Position::active()->get(['id', 'name']);
         $employee = Employee::findOrFail($id);
         return Inertia::render('Employee/Edit', [
             'employee' => $employee,
-            'positions' => $positions,
             'status' => session('status'),
         ]);
     }
@@ -112,9 +108,6 @@ class EmployeeController extends Controller
         $this->authorize('employee_destroy');
 
         $employee = Employee::findOrFail($id);
-        if ($user = User::find($employee['user_id'])) {
-            $user->delete();
-        }
         $employee->delete();
         return Redirect::route('employees.index');
     }

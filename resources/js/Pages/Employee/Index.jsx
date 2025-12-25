@@ -224,9 +224,9 @@ export default function RowDragDrop({ employees }) {
             accessorKey: 'phone'
         },
         {
-            id: 'position',
-            header: 'Position',
-            accessorKey: 'position.name'
+            id: 'category',
+            header: 'Category',
+            accessorKey: 'category'
         },
         {
             id: 'cashbon',

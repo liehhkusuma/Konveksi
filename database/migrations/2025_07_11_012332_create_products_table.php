@@ -17,9 +17,10 @@ return new class extends Migration
             $table->enum('type', ['item', 'service'])->default('item');
             $table->string('name', 200);
             $table->string('img')->nullable();
+            $table->mediumText('colors')->nullable();
             $table->double('purchase_price')->default(0);
             $table->double('packing_price')->default(0);
-            $table->double('other_price')->default(0);  
+            $table->double('other_price')->default(0);
             $table->double('base_production_price')->default(0);
             $table->double('exterior_production_price')->default(0);
             $table->double('interior_production_price')->default(0);

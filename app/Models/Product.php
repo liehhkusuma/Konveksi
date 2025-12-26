@@ -18,6 +18,7 @@ class Product extends Model
             'interior_production_price' => 'double',
             'price' => 'double',
             'is_active' => 'integer',
+            'colors' => 'array',
         ];
     }
 
@@ -25,6 +26,7 @@ class Product extends Model
         'code',
         'name',
         'img',
+        'colors',
         'purchase_price',
         'packing_price',
         'other_price',

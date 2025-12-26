@@ -130,7 +130,7 @@ export default function Create({ materials: mr_materials, measurements }) {
             <Head title="Add Product" />
             <MainCard content={false} title="Add Product" sx={{ '& .MuiInputLabel-root': { fontSize: '0.875rem' } }}>
                 <form onSubmit={handleSubmit}>
-                    <Box sx={{ p: 2.5 }}>
+                <Box sx={{ p: 2.5 }}>
                         <Grid container spacing={3}>
 
                             <Grid item xs={12} sm={6}>
@@ -152,27 +152,38 @@ export default function Create({ materials: mr_materials, measurements }) {
                                     </FormHelperText>
                                 )}
                             </Grid>
+
                             <Grid item xs={12} sm={6}>
-                                <InputLabel htmlFor="is_active">Status</InputLabel>
-                                <Switch
-                                    edge="end"
-                                    id="is_active"
-                                    name="is_active"
-                                    onChange={(e) => setData('is_active', e.target.checked)}
-                                    checked={data.is_active ? true : false}
-                                    inputProps={{
-                                        'aria-labelledby': 'switch-list-label-is_active-2'
-                                    }}
-                                />
-                                {errors.is_active && (
-                                    <FormHelperText error id="personal-is_active-helper">
-                                        {errors.is_active}
+                                <Stack spacing={1}>
+                                    <InputLabel htmlFor="base_production_price" required>Harga Potong Bahan</InputLabel>
+                                    <NumericFormat
+                                        thousandSeparator="."
+                                        decimalSeparator=","
+                                        customInput={TextField}
+                                        id="base_production_price"
+                                        value={data.base_production_price}
+                                        name="base_production_price"
+                                        min={0}
+                                        max={100}
+                                        InputProps={{
+                                            startAdornment: 'Rp'
+                                        }}
+                                        onValueChange={(values) => {
+                                            setData('base_production_price', values.floatValue);
+                                        }}
+                                        placeholder="Enter Harga Potong Bahan"
+                                        autoFocus
+                                    />
+                                </Stack>
+                                {errors.base_production_price && (
+                                    <FormHelperText error id="base_production_price-helper">
+                                        {errors.base_production_price}
                                     </FormHelperText>
                                 )}
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="purchase_price" required>Purchase Price</InputLabel>
+                                    <InputLabel htmlFor="purchase_price" required>Harga Dasar</InputLabel>
                                     <NumericFormat
                                         thousandSeparator="."
                                         decimalSeparator=","
@@ -189,7 +200,7 @@ export default function Create({ materials: mr_materials, measurements }) {
                                         onValueChange={(values) => {
                                             setData('purchase_price', values.floatValue);
                                         }}
-                                        placeholder="Enter Purchase Price"
+                                        placeholder="Enter Harga Dasar"
                                         autoFocus
                                     />
                                 </Stack>
@@ -201,7 +212,7 @@ export default function Create({ materials: mr_materials, measurements }) {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="packing_price" required>Packing Price</InputLabel>
+                                    <InputLabel htmlFor="packing_price" required>Harga Packing Tas</InputLabel>
                                     <NumericFormat
                                         thousandSeparator="."
                                         decimalSeparator=","
@@ -217,7 +228,7 @@ export default function Create({ materials: mr_materials, measurements }) {
                                         onValueChange={(values) => {
                                             setData('packing_price', values.floatValue);
                                         }}
-                                        placeholder="Enter Packing Price"
+                                        placeholder="Enter Harga Packing Tas"
                                         autoFocus
                                     />
                                 </Stack>
@@ -229,91 +240,35 @@ export default function Create({ materials: mr_materials, measurements }) {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="other_price" required>Other Price</InputLabel>
+                                    <InputLabel htmlFor="price" required>Harga Pokok Penjualan</InputLabel>
                                     <NumericFormat
                                         thousandSeparator="."
                                         decimalSeparator=","
                                         customInput={TextField}
-                                        id="other_price"
-                                        value={data.other_price}
-                                        name="other_price"
+                                        id="price"
+                                        value={data.price}
+                                        name="price"
                                         min={0}
                                         max={100}
                                         InputProps={{
                                             startAdornment: 'Rp'
                                         }}
                                         onValueChange={(values) => {
-                                            setData('other_price', values.floatValue);
+                                            setData('price', values.floatValue);
                                         }}
-                                        placeholder="Enter Other Price"
+                                        placeholder="Enter Harga Pokok Penjualan"
                                         autoFocus
                                     />
                                 </Stack>
-                                {errors.other_price && (
-                                    <FormHelperText error id="other_price-helper">
-                                        {errors.other_price}
+                                {errors.price && (
+                                    <FormHelperText error id="price-helper">
+                                        {errors.price}
                                     </FormHelperText>
                                 )}
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="base_production_price" required>Base Production Price</InputLabel>
-                                    <NumericFormat
-                                        thousandSeparator="."
-                                        decimalSeparator=","
-                                        customInput={TextField}
-                                        id="base_production_price"
-                                        value={data.base_production_price}
-                                        name="base_production_price"
-                                        min={0}
-                                        max={100}
-                                        InputProps={{
-                                            startAdornment: 'Rp'
-                                        }}
-                                        onValueChange={(values) => {
-                                            setData('base_production_price', values.floatValue);
-                                        }}
-                                        placeholder="Enter Base Production Price"
-                                        autoFocus
-                                    />
-                                </Stack>
-                                {errors.base_production_price && (
-                                    <FormHelperText error id="base_production_price-helper">
-                                        {errors.base_production_price}
-                                    </FormHelperText>
-                                )}
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <Stack spacing={1}>
-                                    <InputLabel htmlFor="exterior_production_price" required>Exterior Production Price</InputLabel>
-                                    <NumericFormat
-                                        thousandSeparator="."
-                                        decimalSeparator=","
-                                        customInput={TextField}
-                                        id="exterior_production_price"
-                                        value={data.exterior_production_price}
-                                        name="exterior_production_price"
-                                        min={0}
-                                        max={100}
-                                        InputProps={{
-                                            startAdornment: 'Rp'
-                                        }}
-                                        onValueChange={(values) => {
-                                            setData('exterior_production_price', values.floatValue);
-                                        }}
-                                        placeholder="Enter Exterior Production Price"
-                                        autoFocus
-                                    />
-                                </Stack>
-                                {errors.exterior_production_price && (
-                                    <FormHelperText error id="exterior_production_price-helper">
-                                        {errors.exterior_production_price}
-                                    </FormHelperText>
-                                )}
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <Stack spacing={1}>
-                                    <InputLabel htmlFor="interior_production_price" required>Interior Production Price</InputLabel>
+                                    <InputLabel htmlFor="interior_production_price" required>Harga Jahit Dalam</InputLabel>
                                     <NumericFormat
                                         thousandSeparator="."
                                         decimalSeparator=","
@@ -329,7 +284,7 @@ export default function Create({ materials: mr_materials, measurements }) {
                                         onValueChange={(values) => {
                                             setData('interior_production_price', values.floatValue);
                                         }}
-                                        placeholder="Enter Interior Production Price"
+                                        placeholder="Enter Harga Jahit Dalam"
                                         autoFocus
                                     />
                                 </Stack>
@@ -339,6 +294,82 @@ export default function Create({ materials: mr_materials, measurements }) {
                                     </FormHelperText>
                                 )}
                             </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Stack spacing={1}>
+                                    <InputLabel htmlFor="packing_price" required>Warna</InputLabel>
+                                    {/* <Autocomplete
+                                        multiple
+                                        freeSolo
+                                        id="fixed-tags-demo"
+                                        value={data.colors}
+                                        onChange={(event, newValue) => {
+                                            setData([
+                                            ...fixedOptions,
+                                            ...newValue.filter((option) => !fixedOptions.includes(option)),
+                                            ]);
+                                        }}
+                                        renderValue={(values, getItemProps) =>
+                                            values.map((option, index) => {
+                                            const { key, ...itemProps } = getItemProps({ index });
+                                            return (
+                                                <Chip
+                                                    key={key}
+                                                    label={option.title}
+                                                    {...itemProps}
+                                                    disabled={fixedOptions.includes(option)}
+                                                />
+                                            );
+                                            })
+                                        }
+                                        style={{ width: 500 }}
+                                        renderInput={(params) => (
+                                            <TextField {...params} label="Fixed tag" placeholder="Favorites" />
+                                        )}
+                                    /> */}
+                                    <TextField
+                                        fullWidth
+                                        id="personal-color"
+                                        name="color"
+                                        onChange={(e) => setData('color', e.target.value)}
+                                        placeholder="Enter Warna"
+                                        autoFocus
+                                    />
+                                </Stack>
+                                {errors.packing_price && (
+                                    <FormHelperText error id="packing_price-helper">
+                                        {errors.packing_price}
+                                    </FormHelperText>
+                                )}
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Stack spacing={1}>
+                                    <InputLabel htmlFor="exterior_production_price" required>Harga Jahit Luar</InputLabel>
+                                    <NumericFormat
+                                        thousandSeparator="."
+                                        decimalSeparator=","
+                                        customInput={TextField}
+                                        id="exterior_production_price"
+                                        value={data.exterior_production_price}
+                                        name="exterior_production_price"
+                                        min={0}
+                                        max={100}
+                                        InputProps={{
+                                            startAdornment: 'Rp'
+                                        }}
+                                        onValueChange={(values) => {
+                                            setData('exterior_production_price', values.floatValue);
+                                        }}
+                                        placeholder="Enter Harga Jahit Luar"
+                                        autoFocus
+                                    />
+                                </Stack>
+                                {errors.exterior_production_price && (
+                                    <FormHelperText error id="exterior_production_price-helper">
+                                        {errors.exterior_production_price}
+                                    </FormHelperText>
+                                )}
+                            </Grid>
+
                             <Grid item xs={12} sm={6}>
                                 <InputLabel htmlFor="desc">Desc</InputLabel>
                                 <TextField
@@ -359,29 +390,67 @@ export default function Create({ materials: mr_materials, measurements }) {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="price" required>Price</InputLabel>
+                                    <InputLabel htmlFor="other_price" required>Biaya Lainnya</InputLabel>
                                     <NumericFormat
                                         thousandSeparator="."
                                         decimalSeparator=","
                                         customInput={TextField}
-                                        id="price"
-                                        value={data.price}
-                                        name="price"
+                                        id="other_price"
+                                        value={data.other_price}
+                                        name="other_price"
                                         min={0}
                                         max={100}
                                         InputProps={{
                                             startAdornment: 'Rp'
                                         }}
                                         onValueChange={(values) => {
-                                            setData('price', values.floatValue);
+                                            setData('other_price', values.floatValue);
                                         }}
-                                        placeholder="Enter Price"
+                                        placeholder="Enter Biaya Lainnya"
                                         autoFocus
                                     />
                                 </Stack>
-                                {errors.price && (
-                                    <FormHelperText error id="price-helper">
-                                        {errors.price}
+                                {errors.other_price && (
+                                    <FormHelperText error id="other_price-helper">
+                                        {errors.other_price}
+                                    </FormHelperText>
+                                )}
+                            </Grid>
+
+                            <Grid item xs={12} sm={6}>
+                                <Stack spacing={1}>
+                                    <InputLabel htmlFor="personal-img" required>Img</InputLabel>
+                                    <TextField
+                                        fullWidth
+                                        id="personal-img"
+                                        value={data.img}
+                                        name="img"
+                                        onChange={(e) => setData('img', e.target.value)}
+                                        placeholder="Enter Img"
+                                        autoFocus
+                                    />
+                                </Stack>
+                                {errors.img && (
+                                    <FormHelperText error id="personal-img-helper">
+                                        {errors.img}
+                                    </FormHelperText>
+                                )}
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <InputLabel htmlFor="is_active">Status</InputLabel>
+                                <Switch
+                                    edge="end"
+                                    id="is_active"
+                                    name="is_active"
+                                    onChange={(e) => setData('is_active', e.target.checked)}
+                                    checked={data.is_active ? true : false}
+                                    inputProps={{
+                                        'aria-labelledby': 'switch-list-label-is_active-2'
+                                    }}
+                                />
+                                {errors.is_active && (
+                                    <FormHelperText error id="personal-is_active-helper">
+                                        {errors.is_active}
                                     </FormHelperText>
                                 )}
                             </Grid>

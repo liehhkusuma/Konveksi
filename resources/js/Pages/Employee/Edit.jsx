@@ -70,8 +70,8 @@ export default function Create({ employee, positions }) {
                                 <Stack spacing={1}>
                                     <InputLabel htmlFor="employee-category">Category</InputLabel>
                                     <RadioGroup row aria-label="employee-category">
-                                        <FormControlLabel control={<Radio checked={data.category === 'daily'} value={'daily'} onChange={(e) => setData('category', e.target.value)} />} label={'Daily'} />
-                                        <FormControlLabel control={<Radio checked={data.category === 'project'} value={'project'} onChange={(e) => setData('category', e.target.value)} />} label={'Project'} />
+                                        <FormControlLabel control={<Radio checked={data.category === 'daily'} value={'daily'} onChange={(e) => setData('category', e.target.value)} />} label={'Harian'} />
+                                        <FormControlLabel control={<Radio checked={data.category === 'project'} value={'project'} onChange={(e) => setData('category', e.target.value)} />} label={'Borongan'} />
                                     </RadioGroup>
                                 </Stack>
                             </Grid>
@@ -79,9 +79,9 @@ export default function Create({ employee, positions }) {
                                 <Stack spacing={1}>
                                     <InputLabel htmlFor="material-type">Type</InputLabel>
                                     <RadioGroup row aria-label="material-type">
-                                        <FormControlLabel control={<Radio checked={data.type === 'default'} value={'default'} onChange={(e) => setData('type', e.target.value)} />} label={'Default'} />
-                                        <FormControlLabel control={<Radio checked={data.type === 'exterior'} value={'exterior'} onChange={(e) => setData('type', e.target.value)} />} label={'Exterior'} />
-                                        <FormControlLabel control={<Radio checked={data.type === 'interior'} value={'interior'} onChange={(e) => setData('type', e.target.value)} />} label={'Interior'} />
+                                        <FormControlLabel control={<Radio checked={data.type === 'default'} value={'default'} onChange={(e) => setData('type', e.target.value)} />} label={'Tidak Jahit'} />
+                                        <FormControlLabel control={<Radio checked={data.type === 'exterior'} value={'exterior'} onChange={(e) => setData('type', e.target.value)} />} label={'Jahit Luar'} />
+                                        <FormControlLabel control={<Radio checked={data.type === 'interior'} value={'interior'} onChange={(e) => setData('type', e.target.value)} />} label={'Jahit Dalam'} />
                                     </RadioGroup>
                                 </Stack>
                             </Grid>

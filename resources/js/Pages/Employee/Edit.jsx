@@ -80,8 +80,8 @@ export default function Create({ employee, positions }) {
                                     <InputLabel htmlFor="material-type">Type</InputLabel>
                                     <RadioGroup row aria-label="material-type">
                                         <FormControlLabel control={<Radio checked={data.type === 'default'} value={'default'} onChange={(e) => setData('type', e.target.value)} />} label={'Tidak Jahit'} />
-                                        <FormControlLabel control={<Radio checked={data.type === 'exterior'} value={'exterior'} onChange={(e) => setData('type', e.target.value)} />} label={'Jahit Luar'} />
-                                        <FormControlLabel control={<Radio checked={data.type === 'interior'} value={'interior'} onChange={(e) => setData('type', e.target.value)} />} label={'Jahit Dalam'} />
+                                        <FormControlLabel control={<Radio checked={data.type === 'external'} value={'external'} onChange={(e) => setData('type', e.target.value)} />} label={'Jahit Luar'} />
+                                        <FormControlLabel control={<Radio checked={data.type === 'internal'} value={'internal'} onChange={(e) => setData('type', e.target.value)} />} label={'Jahit Dalam'} />
                                     </RadioGroup>
                                 </Stack>
                             </Grid>

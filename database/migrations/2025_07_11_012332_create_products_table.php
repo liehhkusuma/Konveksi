@@ -22,8 +22,8 @@ return new class extends Migration
             $table->double('packing_price')->default(0);
             $table->double('other_price')->default(0);
             $table->double('base_production_price')->default(0);
-            $table->double('exterior_production_price')->default(0);
-            $table->double('interior_production_price')->default(0);
+            $table->double('external_production_price')->default(0);
+            $table->double('internal_production_price')->default(0);
             $table->double('price')->default(0);
             $table->boolean('is_active')->default(true);
             $table->mediumText('desc')->nullable();

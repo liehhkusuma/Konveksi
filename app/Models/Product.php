@@ -14,8 +14,8 @@ class Product extends Model
     {
         return [
             'purchase_price' => 'double',
-            'exterior_production_price' => 'double',
-            'interior_production_price' => 'double',
+            'external_production_price' => 'double',
+            'internal_production_price' => 'double',
             'price' => 'double',
             'is_active' => 'integer',
             'colors' => 'array',
@@ -31,8 +31,8 @@ class Product extends Model
         'packing_price',
         'other_price',
         'base_production_price',
-        'exterior_production_price',
-        'interior_production_price',
+        'external_production_price',
+        'internal_production_price',
         'price',
         'is_active',
         'desc',

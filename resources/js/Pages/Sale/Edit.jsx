@@ -42,24 +42,25 @@ import { Add, CloseCircle, Edit, Send, Trash } from 'iconsax-react';
 
 // ==============================|| USER PROFILE - PERSONAL ||============================== //
 
-export default function Create({ materials: mr_materials, measurements, distributors }) {
+export default function Create({ sale, products: mr_products, sellers }) {
     const theme = useTheme();
     const mode = theme.palette.mode;
 
-    const { data, setData, post, errors, processing, recentlySuccessful, transform } =
+    const { data, setData, patch, errors, processing, recentlySuccessful, transform } =
         useForm({
-            distributor_id: '',
-            purchase_date: new Date(),
-            notes: '',
-            sub_price: 0,
-            total_price: 0,
-            materials: [],
+            seller_id: sale.seller_id,
+            sale_date: sale.sale_date ? new Date(sale.sale_date) : new Date(),
+            notes: sale.notes,
+            total_price: sale.total_price,
+            sub_price: sale.sub_price,
+            products: sale?.products ? sale.products : [],
         });
 
     transform((data) => ({
         ...data,
-        purchase_date: data.purchase_date ? format(data.purchase_date, 'yyyy-MM-dd HH:mm:ss') : null
+        sale_date: data.sale_date ? format(data.sale_date, 'yyyy-MM-dd HH:mm:ss') : null
     }));
+
 
     const formatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -69,119 +70,104 @@ export default function Create({ materials: mr_materials, measurements, distribu
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        post(route('purchases.store'));
+        patch(route('sales.update', { id: sale.id }));
     };
 
     useEffect(() => {
         let totalPrice = 0;
-        data.materials.forEach((material) => {
-            totalPrice += material.total_price;
+        data.products.forEach((product) => {
+            totalPrice += product.total_price;
         });
 
-        setData('sub_price', totalPrice);
         setData('total_price', totalPrice);
+        setData('sub_price', totalPrice);
 
-    }, [data.materials]);
+    }, [data.products]);
 
-    const addMaterial = (material) => {
-        setData('materials', [...data.materials, material]);
+    const addProduct = (product) => {
+        setData('products', [...data.products, product]);
     }
 
-    const removeMaterial = (index) => {
-        const newMaterials = [...data.materials];
-        newMaterials.splice(index, 1);
-        setData('materials', newMaterials);
+    const removeProduct = (index) => {
+        const newProducts = [...data.products];
+        newProducts.splice(index, 1);
+        setData('products', newProducts);
     };
 
-    const handleMaterialChange = (index, field, value) => {
-        const newMaterials = [...data.materials];
-        newMaterials[index][field] = value;
+    const handleProductChange = (index, field, value) => {
+        const newProducts = [...data.products];
+        newProducts[index][field] = value;
 
 
-        if (field === 'material_id') {
-            const selected = mr_materials.find(material => material.id == value);
+        if (field === 'product_id') {
+            const selected = mr_products.find(product => product.id == value);
             if (selected) {
-                newMaterials[index].material = selected.name;
-                newMaterials[index].measurement_id = selected.measurement_id;
-                const measurement = measurements.find(measurement => measurement.id == selected.measurement_id);
-                if (measurement) {
-                    newMaterials[index].measurement = measurement.name;
-                } else {
-                    newMaterials[index].measurement = '';
-                }
+                newProducts[index].product = selected.name;
             } else {
-                newMaterials[index].name = '';
-            }
-        }
-        // Auto fill measurement
-        if (field === 'measurement_id') {
-            const selected = measurements.find(measurement => measurement.id == value);
-            if (selected) {
-                newMaterials[index].measurement = selected.name;
-            } else {
-                newMaterials[index].measurement = '';
+                newProducts[index].name = '';
             }
         }
 
         if (field === 'price') {
-            newMaterials[index].total_price = newMaterials[index].price * newMaterials[index].quantity;
+            newProducts[index].total_price = newProducts[index].price * newProducts[index].quantity;
         }
         if (field === 'quantity') {
-            newMaterials[index].total_price = newMaterials[index].price * newMaterials[index].quantity;
+            newProducts[index].total_price = newProducts[index].price * newProducts[index].quantity;
         }
 
-        setData('materials', newMaterials);
+        setData('products', newProducts);
     };
+
 
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Add Purchase
+                    Edit Sale
                 </h2>
             }>
-            <Head title="Add Purchase" />
-            <MainCard content={false} title="Add Purchase" sx={{ '& .MuiInputLabel-root': { fontSize: '0.875rem' } }}>
+            <Head title="Edit Sale" />
+            <MainCard content={false} title="Edit Sale" sx={{ '& .MuiInputLabel-root': { fontSize: '0.875rem' } }}>
                 <form onSubmit={handleSubmit}>
                     <Box sx={{ p: 2.5 }}>
                         <Grid container spacing={3}>
                             <Grid item xs={12} sm={6}>
                                 <Stack spacing={0}>
-                                    <InputLabel htmlFor="distributor_id" required>Distributor</InputLabel>
+                                    <InputLabel htmlFor="seller_id" required>Seller</InputLabel>
                                     <Select
                                         fullWidth
-                                        value={data.distributor_id}
-                                        name="distributor_id"
-                                        onChange={(e) => setData('distributor_id', e.target.value)}
+                                        value={data.seller_id}
+                                        name="seller_id"
+                                        onChange={(e) => setData('seller_id', e.target.value)}
                                     >
-                                        {distributors.map((distributor, index) => (
-                                            <MenuItem key={index} value={distributor.id} selected={data.distributor_id == distributor.id}>
-                                                {distributor.name}
+                                        {sellers.map((seller, index) => (
+                                            <MenuItem key={index} value={seller.id} selected={data.seller_id == seller.id}>
+                                                {seller.name}
                                             </MenuItem>
                                         ))}
                                     </Select>
                                 </Stack>
-                                {errors.distributor_id && (
-                                    <FormHelperText error id="distributor_id-helper">
-                                        {errors.distributor_id}
+                                {errors.seller_id && (
+                                    <FormHelperText error id="seller_id-helper">
+                                        {errors.seller_id}
                                     </FormHelperText>
                                 )}
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="purchase_date" required>Purchase Date</InputLabel>
+                                    <InputLabel htmlFor="sale_date" required>Sale Date</InputLabel>
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                         <DatePicker
-                                            value={data.purchase_date}
+                                            value={data.sale_date}
                                             // minDate={minDate}
-                                            onChange={(e) => setData('purchase_date', e)}
+                                            onChange={(e) => setData('sale_date', e)}
                                             sx={{ width: 1 }}
                                         />
                                     </LocalizationProvider>
                                 </Stack>
-                                {errors.purchase_date && (
-                                    <FormHelperText error id="personal-purchase_date-helper">
-                                        {errors.purchase_date}
+                                {errors.sale_date && (
+                                    <FormHelperText error id="personal-sale_date-helper">
+                                        {errors.sale_date}
                                     </FormHelperText>
                                 )}
                             </Grid>
@@ -213,34 +199,53 @@ export default function Create({ materials: mr_materials, measurements, distribu
                                     <TableHead>
                                         <TableRow>
                                             <TableCell>#</TableCell>
-                                            <TableCell>Material</TableCell>
+                                            <TableCell>Product</TableCell>
+                                            <TableCell>Color</TableCell>
                                             <TableCell>Quantity</TableCell>
-                                            <TableCell>Mesurement</TableCell>
                                             <TableCell>Price</TableCell>
                                             <TableCell>Total</TableCell>
                                             <TableCell align="center">Action</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {data.materials?.map((material, index) => (
+                                        {data.products?.map((product, index) => (
                                             <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }} key={index}>
-                                                <TableCell>{data.materials.indexOf(material) + 1}</TableCell>
+                                                <TableCell>{data.products.indexOf(product) + 1}</TableCell>
                                                 <TableCell >
                                                     <Select
                                                         fullWidth
-                                                        value={material.material_id}
-                                                        name="material_id"
-                                                        onChange={(e) => handleMaterialChange(index, 'material_id', e.target.value)}
+                                                        value={product.product_id}
+                                                        name="product_id"
+                                                        onChange={(e) => handleProductChange(index, 'product_id', e.target.value)}
                                                     >
-                                                        {mr_materials.map((materialItem, indexIten) => (
-                                                            <MenuItem key={indexIten} value={materialItem.id} selected={material.material_id == materialItem.id}>
-                                                                {materialItem.name}
+                                                        {mr_products.map((productItem, indexIten) => (
+                                                            <MenuItem key={indexIten} value={productItem.id} selected={product.product_id == productItem.id}>
+                                                                {productItem.name}
                                                             </MenuItem>
                                                         ))}
                                                     </Select>
-                                                    {errors[`materials.${index}.material_id`] && (
-                                                        <FormHelperText error id="material.material_id-helper">
-                                                            {errors[`materials.${index}.material_id`]}
+                                                    {errors[`products.${index}.product_id`] && (
+                                                        <FormHelperText error id="product.product_id-helper">
+                                                            {errors[`products.${index}.product_id`]}
+                                                        </FormHelperText>
+                                                    )}
+                                                </TableCell>
+                                                <TableCell >
+                                                    <Select
+                                                        fullWidth
+                                                        value={product.color}
+                                                        name="color"
+                                                        onChange={(e) => handleProductChange(index, 'color', e.target.value)}
+                                                    >
+                                                        {mr_products.map((productItem, indexItem) => (
+                                                            <MenuItem key={indexItem} value={productItem.name} selected={product.name == productItem.name}>
+                                                                {productItem.name}
+                                                            </MenuItem>
+                                                        ))}
+                                                    </Select>
+                                                    {errors[`products.${index}.color`] && (
+                                                        <FormHelperText error id="product.color-helper">
+                                                            {errors[`products.${index}.color`]}
                                                         </FormHelperText>
                                                     )}
                                                 </TableCell>
@@ -248,68 +253,49 @@ export default function Create({ materials: mr_materials, measurements, distribu
                                                     <TextField
                                                         type="number"
                                                         id="quantity"
-                                                        value={material.quantity}
+                                                        value={product.quantity}
                                                         name="quantity"
                                                         minimum={1}
-                                                        onChange={(e) => handleMaterialChange(index, 'quantity', e.target.value)}
+                                                        onChange={(e) => handleProductChange(index, 'quantity', e.target.value)}
                                                         placeholder="Enter Quantity"
                                                         autoFocus
                                                     />
-                                                    {errors[`materials.${index}.quantity`] && (
-                                                        <FormHelperText error id="material.quantity-helper">
-                                                            {errors[`materials.${index}.quantity`]}
-                                                        </FormHelperText>
-                                                    )}
-                                                </TableCell><TableCell >
-                                                    <Select
-                                                        fullWidth
-                                                        value={material.measurement_id}
-                                                        name="measurement_id"
-                                                        onChange={(e) => handleMaterialChange(index, 'measurement_id', e.target.value)}
-                                                    >
-                                                        {measurements.map((measurementItem, indexItem) => (
-                                                            <MenuItem key={indexItem} value={measurementItem.id} selected={material.measurement_id == measurementItem.id}>
-                                                                {measurementItem.name}
-                                                            </MenuItem>
-                                                        ))}
-                                                    </Select>
-                                                    {errors[`materials.${index}.measurement_id`] && (
-                                                        <FormHelperText error id="material.measurement_id-helper">
-                                                            {errors[`materials.${index}.measurement_id`]}
+                                                    {errors[`products.${index}.quantity`] && (
+                                                        <FormHelperText error id="product.quantity-helper">
+                                                            {errors[`products.${index}.quantity`]}
                                                         </FormHelperText>
                                                     )}
                                                 </TableCell>
-
                                                 <TableCell >
                                                     <NumericFormat
                                                         fullWidth
                                                         thousandSeparator="."
                                                         decimalSeparator=","
                                                         customInput={TextField}
-                                                        id="material-price"
-                                                        value={material.price}
-                                                        name="material-price"
+                                                        id="product-price"
+                                                        value={product.price}
+                                                        name="product-price"
                                                         onValueChange={(values) => {
-                                                            handleMaterialChange(index, 'price', values.floatValue || 0);
+                                                            handleProductChange(index, 'price', values.floatValue || 0);
                                                         }}
                                                         placeholder="Enter Price"
                                                         autoFocus
                                                     />
-                                                    {errors[`purchases.${index}.materials.${index}.price`] && (
-                                                        <FormHelperText error id="purchase.price-helper">
-                                                            {errors[`purchases.${index}.materials.${index}.price`]}
+                                                    {errors[`sales.${index}.products.${index}.price`] && (
+                                                        <FormHelperText error id="sale.price-helper">
+                                                            {errors[`sales.${index}.products.${index}.price`]}
                                                         </FormHelperText>
                                                     )}
                                                 </TableCell>
                                                 <TableCell component="th" scope="row">
                                                     <Stack direction="column" justifyContent="flex-end" spacing={2}>
                                                         <Box sx={{ pl: 2 }}>
-                                                            <Typography>{formatter.format((material.total_price).toFixed(2))}</Typography>
+                                                            <Typography>{formatter.format((product.total_price).toFixed(2))}</Typography>
                                                         </Box>
                                                     </Stack>
                                                 </TableCell>
                                                 <TableCell align="center">
-                                                    {data.materials.length > 1 ? (
+                                                    {data.products.length > 1 ? (
                                                         <Tooltip
                                                             componentsProps={{
                                                                 tooltip: {
@@ -319,9 +305,9 @@ export default function Create({ materials: mr_materials, measurements, distribu
                                                                     }
                                                                 }
                                                             }}
-                                                            title="Remove Material"
+                                                            title="Remove Product"
                                                         >
-                                                            <Button color="error" onClick={() => removeMaterial(index)}>
+                                                            <Button color="error" onClick={() => removeProduct(index)}>
                                                                 <Trash />
                                                             </Button>
                                                         </Tooltip>
@@ -333,9 +319,9 @@ export default function Create({ materials: mr_materials, measurements, distribu
                                 </Table>
                             </TableContainer>
                             <Divider />
-                            {errors.materials && !Array.isArray(errors?.materials) && (
+                            {errors.products && !Array.isArray(errors?.products) && (
                                 <Stack direction="row" justifyContent="center" sx={{ p: 1.5 }}>
-                                    <FormHelperText error={true}>{errors.materials}</FormHelperText>
+                                    <FormHelperText error={true}>{errors.products}</FormHelperText>
                                 </Stack>
                             )}
                             <Grid container justifyContent="space-between" sx={{ mt: 5 }}>
@@ -345,10 +331,10 @@ export default function Create({ materials: mr_materials, measurements, distribu
                                             color="primary"
                                             startIcon={<Add />}
                                             onClick={() =>
-                                                addMaterial({
-                                                    material_id: '',
-                                                    measurement_id: '',
-                                                    material: '',
+                                                addProduct({
+                                                    product_id: '',
+                                                    color: '',
+                                                    product: '',
                                                     measurement: '',
                                                     quantity: 1,
                                                     price: 0,
@@ -358,7 +344,7 @@ export default function Create({ materials: mr_materials, measurements, distribu
                                             variant="dashed"
                                             sx={{ bgcolor: 'transparent !important' }}
                                         >
-                                            Add Material
+                                            Add Product
                                         </Button>
                                     </Box>
                                 </Grid>
@@ -383,13 +369,13 @@ export default function Create({ materials: mr_materials, measurements, distribu
                     <Divider />
                     <Box sx={{ p: 2.5 }}>
                         <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 2.5 }}>
-                            <Link href={route('purchases.index')}>
+                            <Link href={route('sales.index')}>
                                 <Button variant="outlined" color="secondary">
                                     Back
                                 </Button>
                             </Link>
                             <Button disabled={processing} type="submit" variant="contained">
-                                Create
+                                Update
                             </Button>
                             <Transition
                                 show={recentlySuccessful}
@@ -399,7 +385,7 @@ export default function Create({ materials: mr_materials, measurements, distribu
                                 leaveTo="opacity-0"
                             >
                                 <p className="text-sm text-gray-600">
-                                    Created.
+                                    Updated.
                                 </p>
                             </Transition>
                         </Stack>

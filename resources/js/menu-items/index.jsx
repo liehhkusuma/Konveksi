@@ -30,6 +30,7 @@ const menuItems = {
             type: 'group',
             children: [
                 { id: 'purchases', title: 'Purchase', type: 'item', url: route('purchases.index'), pathname: 'purchases', access: 'purchase_view', icon: Box1, target: true, },
+                { id: 'sales', title: 'Sale', type: 'item', url: route('sales.index'), pathname: 'sales', access: 'sale_view', icon: Box1, target: true, },
             ]
         },
         {

@@ -36,7 +36,10 @@ class EmployeeSeeder extends Seeder
 
         // generate
         foreach ($users as $user) {
-            $exist = User::create($user);
+            $exist = User::where('email',$user['email'])->first();
+            if(!$exist){
+                $exist = User::create($user);
+            }
             $exist->roles()->sync([1]);
         }
     }

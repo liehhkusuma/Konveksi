@@ -20,7 +20,7 @@ class EmployeeRequest extends FormRequest
             // 'position_id' => ['required'],
             'name' => ['required', 'string', 'max:150'],
             'category' => ['required', 'in:daily,project'],
-            'type' => ['required', 'in:exterior,interior,default'],
+            'type' => ['required', 'in:external,internal,default'],
             'phone' => ['required', 'numeric', 'max_digits:15'],
             'cashbon' => ['required', 'numeric', 'min:0'],
             'salary' => ['required_if:category,daily', 'numeric', 'min:0'],

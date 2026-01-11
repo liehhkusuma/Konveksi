@@ -52,6 +52,7 @@ export default function Create({ purchase, materials: mr_materials, measurements
             purchase_date: purchase.purchase_date ? new Date(purchase.purchase_date) : new Date(),
             notes: purchase.notes,
             total_price: purchase.total_price,
+            sub_price: purchase.sub_price,
             materials: purchase?.materials ? purchase.materials : [],
         });
 
@@ -79,8 +80,9 @@ export default function Create({ purchase, materials: mr_materials, measurements
         });
 
         setData('total_price', totalPrice);
+        setData('sub_price', totalPrice);
 
-    }, [data]);
+    }, [data.materials]);
 
     const addMaterial = (material) => {
         setData('materials', [...data.materials, material]);

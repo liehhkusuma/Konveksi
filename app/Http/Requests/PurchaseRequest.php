@@ -19,6 +19,8 @@ class PurchaseRequest extends FormRequest
             'distributor_id' => ['required', 'exists:distributors,id'],
             'purchase_date' => ['required', Rule::date()->format('Y-m-d H:i:s')],
             'notes' => ['nullable', 'string'],
+            // 'sub_price' => ['required', 'numeric', 'min:0'],
+            'total_price' => ['required', 'numeric', 'min:0'],
             'materials'   => 'required|array|min:1',
             'materials.*.material_id' => 'required|exists:materials,id',
             'materials.*.measurement_id' => 'required|exists:measurements,id',

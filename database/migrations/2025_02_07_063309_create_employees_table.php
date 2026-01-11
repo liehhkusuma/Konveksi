@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('code', 50);
             $table->string('name');
             $table->enum('category', ['daily', 'project'])->default('daily');
-            $table->enum('type', ['exterior', 'interior', 'default'])->default('default');
+            $table->enum('type', ['external', 'internal', 'default'])->default('default');
             $table->string('phone', 20)->nullable();
             $table->mediumText('address')->nullable();
             $table->double('cashbon')->default(0);

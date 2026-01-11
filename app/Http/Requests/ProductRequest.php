@@ -21,9 +21,9 @@ class ProductRequest extends FormRequest
                 $packing_price = $this->input('packing_price');
                 $other_price = $this->input('other_price');
                 $base_production_price = $this->input('base_production_price');
-                $exterior = $this->input('exterior_production_price');
-                $internal = $this->input('interior_production_price');
-                $totalProduction = $internal + $exterior + $packing_price + $other_price + $base_production_price;
+                // $external = $this->input('external_production_price');
+                $internal = $this->input('internal_production_price');
+                $totalProduction = $internal + $packing_price + $other_price + $base_production_price;
 
                 if ($value <= $totalProduction) {
                     $fail("The {$attribute} must be greater than the sum of production costs.");
@@ -32,12 +32,12 @@ class ProductRequest extends FormRequest
             'packing_price' => ['required', 'numeric', 'min:0'],
             'other_price' => ['required', 'numeric', 'min:0'],
             'base_production_price' => ['required', 'numeric', 'min:0'],
-            'exterior_production_price' => ['required', 'numeric', 'min:0'],
-            'interior_production_price' => ['required', 'numeric', 'min:0'],
+            'external_production_price' => ['required', 'numeric', 'min:0'],
+            'internal_production_price' => ['required', 'numeric', 'min:0'],
             'price' => ['required', 'numeric', 'min:0', 'gt:purchase_price'],
             'is_active' => ['required'],
             'desc' => ['nullable'],
-            'colors'   => 'required|array|min:1',
+            // 'colors'   => 'required|array|min:1',
             'materials'   => 'required|array|min:1',
             'materials.*.material_id' => 'required|exists:materials,id',
             'materials.*.measurement_id' => 'required|exists:measurements,id',

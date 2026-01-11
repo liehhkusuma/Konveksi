@@ -52,8 +52,8 @@ export default function Create({ product, materials: mr_materials, measurements 
             packing_price: product.packing_price,
             other_price: product.other_price,
             base_production_price: product.base_production_price,
-            exterior_production_price: product.exterior_production_price,
-            interior_production_price: product.interior_production_price,
+            external_production_price: product.external_production_price,
+            internal_production_price: product.internal_production_price,
             price: product.price,
             img: null,
             is_active: product.is_active ? true : false,
@@ -83,11 +83,11 @@ export default function Create({ product, materials: mr_materials, measurements 
         if (data.base_production_price) {
             totalPrice += data.base_production_price;
         }
-        if (data.exterior_production_price) {
-            totalPrice += data.exterior_production_price;
-        }
-        if (data.interior_production_price) {
-            totalPrice += data.interior_production_price;
+        // if (data.external_production_price) {
+        //     totalPrice += data.external_production_price;
+        // }
+        if (data.internal_production_price) {
+            totalPrice += data.internal_production_price;
         }
         if (data.packing_price) {
             totalPrice += data.packing_price;
@@ -273,29 +273,29 @@ export default function Create({ product, materials: mr_materials, measurements 
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="interior_production_price" required>Harga Jahit Dalam</InputLabel>
+                                    <InputLabel htmlFor="internal_production_price" required>Harga Jahit Dalam</InputLabel>
                                     <NumericFormat
                                         thousandSeparator="."
                                         decimalSeparator=","
                                         customInput={TextField}
-                                        id="interior_production_price"
-                                        value={data.interior_production_price}
-                                        name="interior_production_price"
+                                        id="internal_production_price"
+                                        value={data.internal_production_price}
+                                        name="internal_production_price"
                                         min={0}
                                         max={100}
                                         InputProps={{
                                             startAdornment: 'Rp'
                                         }}
                                         onValueChange={(values) => {
-                                            setData('interior_production_price', values.floatValue);
+                                            setData('internal_production_price', values.floatValue);
                                         }}
                                         placeholder="Enter Harga Jahit Dalam"
                                         autoFocus
                                     />
                                 </Stack>
-                                {errors.interior_production_price && (
-                                    <FormHelperText error id="interior_production_price-helper">
-                                        {errors.interior_production_price}
+                                {errors.internal_production_price && (
+                                    <FormHelperText error id="internal_production_price-helper">
+                                        {errors.internal_production_price}
                                     </FormHelperText>
                                 )}
                             </Grid>
@@ -348,29 +348,29 @@ export default function Create({ product, materials: mr_materials, measurements 
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="exterior_production_price" required>Harga Jahit Luar</InputLabel>
+                                    <InputLabel htmlFor="external_production_price" required>Harga Jahit Luar</InputLabel>
                                     <NumericFormat
                                         thousandSeparator="."
                                         decimalSeparator=","
                                         customInput={TextField}
-                                        id="exterior_production_price"
-                                        value={data.exterior_production_price}
-                                        name="exterior_production_price"
+                                        id="external_production_price"
+                                        value={data.external_production_price}
+                                        name="external_production_price"
                                         min={0}
                                         max={100}
                                         InputProps={{
                                             startAdornment: 'Rp'
                                         }}
                                         onValueChange={(values) => {
-                                            setData('exterior_production_price', values.floatValue);
+                                            setData('external_production_price', values.floatValue);
                                         }}
                                         placeholder="Enter Harga Jahit Luar"
                                         autoFocus
                                     />
                                 </Stack>
-                                {errors.exterior_production_price && (
-                                    <FormHelperText error id="exterior_production_price-helper">
-                                        {errors.exterior_production_price}
+                                {errors.external_production_price && (
+                                    <FormHelperText error id="external_production_price-helper">
+                                        {errors.external_production_price}
                                     </FormHelperText>
                                 )}
                             </Grid>

@@ -21,6 +21,7 @@ import { useTheme } from '@mui/material/styles';
 
 // third-party
 import { DndProvider } from 'react-dnd';
+import { parseISO, format } from 'date-fns';
 import { isMobile } from 'react-device-detect';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
@@ -50,7 +51,7 @@ import IconButton from '@/components/@extended/IconButton';
 import LinearWithLabel from '@/components/@extended/progress/LinearWithLabel';
 import { CSVExport, DraggableRow } from '@/components/third-party/react-table';
 import AuthenticatedLayout from '@/layouts/Dashboard';
-import AlertProductDelete from './Modal/AlertProductDelete';
+import AlertSaleDelete from './Modal/AlertSaleDelete';
 import { ThemeMode } from '@/types/config';
 
 // assets
@@ -71,20 +72,20 @@ function ReactTable({ defaultColumns, defaultData }) {
 
     const handleSearch = (event) => {
         setGlobalFilter(event?.target.value)
-        router.get(route('products.index'), { search: event?.target.value }, { preserveState: true });
+        router.get(route('sales.index'), { search: event?.target.value }, { preserveState: true });
     };
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
-        router.get(route('products.index'), { page: newPage }, { preserveState: true });
+        router.get(route('sales.index'), { page: newPage }, { preserveState: true });
     };
 
     useEffect(() => {
         setData([...defaultData.data]);
     }, [defaultData.data]);
 
-    const reproductRow = (draggedRowIndex, targetRowIndex) => {
+    const resaleRow = (draggedRowIndex, targetRowIndex) => {
         data.splice(targetRowIndex, 0, data.splice(draggedRowIndex, 1)[0]);
-        router.post(route('products.sort'), { products: data }, { preserveState: true });
+        router.post(route('sales.sort'), { sales: data }, { preserveState: true });
     };
 
     const table = useReactTable({
@@ -119,10 +120,10 @@ function ReactTable({ defaultColumns, defaultData }) {
                     />
 
                     <Stack direction="row" alignItems="center" spacing={2}>
-                        {auth.can.product_create ? (<Button variant="contained" startIcon={<Add />} onClick={() => {
-                            router.get(route('products.create'))
+                        {auth.can.sale_create ? (<Button variant="contained" startIcon={<Add />} onClick={() => {
+                            router.get(route('sales.create'))
                         }} size="large">
-                            Add Product
+                            Add Sale
                         </Button>) : null}
                     </Stack>
                 </Stack>
@@ -174,7 +175,7 @@ function ReactTable({ defaultColumns, defaultData }) {
 
 // ==============================|| ROW - DRAG & DROP ||============================== //
 
-export default function RowDragDrop({ products }) {
+export default function RowDragDrop({ sales }) {
     const { auth, ziggy } = usePage().props;
     const urlUploads = ziggy.uploads;
     const theme = useTheme();
@@ -214,47 +215,19 @@ export default function RowDragDrop({ products }) {
             accessorKey: 'code'
         },
         {
-            id: 'name',
-            header: 'Name',
-            accessorKey: 'name'
-        },
-        {
-            id: 'purchase_price',
-            header: 'Purchase Price',
-            accessorKey: 'purchase_price',
-            cell: ({ row }) => {
-                return formatter.format(row.original.purchase_price);
-            }
-        },
-        {
-            id: 'price',
-            header: 'Price',
-            accessorKey: 'price',
-            cell: ({ row }) => {
-                return formatter.format(row.original.price);
-            }
-        },
-        {
-            id: 'production_price',
-            header: 'Production Price',
-            cell: ({ row }) => {
-                return <Stack alignItems="center" spacing={2}>
-                    <Typography variant="body1">{'internal: ' + formatter.format(row.original.internal_production_price)}</Typography>
-                    <Typography variant="body1">{'external: ' + formatter.format(row.original.external_production_price)}</Typography>
-                </Stack>
-            }
-        },
-        {
-            id: 'is_active',
-            header: 'status',
-            accessorKey: 'is_active',
+            id: 'sale_date',
+            header: 'Sale date',
+            accessorKey: 'sale_date',
             cell: (props) => {
-                switch (props.getValue()) {
-                    case (1 || '1'):
-                        return <Chip color="success" label="Active" size="small" variant="light" />;
-                    default:
-                        return <Chip color="error" label="Inactive" size="small" variant="light" />;
-                }
+                return format(parseISO(props.getValue()), 'dd MMMM yyyy');
+            }
+        },
+        {
+            id: 'total_price',
+            header: 'Total Sale',
+            accessorKey: 'total_price',
+            cell: ({ row }) => {
+                return formatter.format(row.original.total_price);
             }
         },
         {
@@ -262,7 +235,7 @@ export default function RowDragDrop({ products }) {
             header: 'Actions',
             cell: ({ row }) => (
                 <Stack direction="row" spacing={1} alignItems="center">
-                    {auth.can.product_edit ? (<Tooltip
+                    {auth.can.sale_edit ? (<Tooltip
                         componentsProps={{
                             tooltip: {
                                 sx: {
@@ -276,13 +249,13 @@ export default function RowDragDrop({ products }) {
                         <IconButton
                             color="primary"
                             onClick={() => {
-                                router.get(route('products.edit', { product: row.original?.id }));
+                                router.get(route('sales.edit', { sale: row.original?.id }));
                             }}
                         >
                             <Edit />
                         </IconButton>
                     </Tooltip>) : null}
-                    {auth.can.product_destroy ? (<Tooltip
+                    {/* {auth.can.sale_destroy ? (<Tooltip
                         componentsProps={{
                             tooltip: {
                                 sx: {
@@ -304,7 +277,7 @@ export default function RowDragDrop({ products }) {
                         >
                             <Trash />
                         </IconButton>
-                    </Tooltip>) : null}
+                    </Tooltip>) : null} */}
                 </Stack>
             ),
             meta: {
@@ -318,16 +291,16 @@ export default function RowDragDrop({ products }) {
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Product
+                    Sale
                 </h2>
             }
         >
-            <Head title="Backoffice Product" />
-            <MainCard title="Product">
+            <Head title="Backoffice Sale" />
+            <MainCard title="Sale">
                 <DndProvider backend={isMobile ? TouchBackend : HTML5Backend}>
-                    <ReactTable {...{ defaultColumns, defaultData: products }} />
+                    <ReactTable {...{ defaultColumns, defaultData: sales }} />
                 </DndProvider>
-                <AlertProductDelete id={Number(resourceDeleteId)} title={resourceDeleteTitle} open={open} handleClose={handleClose} />
+                <AlertSaleDelete id={Number(resourceDeleteId)} title={resourceDeleteTitle} open={open} handleClose={handleClose} />
             </MainCard>
         </AuthenticatedLayout>
     );

@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 
 // material-ui
 import { alpha, useTheme } from '@mui/material/styles';
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -26,13 +27,13 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import Chip from '@mui/material/Chip';
-import Autocomplete from '@mui/material/Autocomplete';
 
 import { NumericFormat } from 'react-number-format';
 
 // project-imports
 import AuthenticatedLayout from '@/layouts/Dashboard';
 import MainCard from '@/components/MainCard';
+import InputFileUpload from '@/components/InputFileUpload';
 import { ThemeMode } from '@/config';
 import { Transition } from '@headlessui/react';
 
@@ -44,7 +45,7 @@ export default function Create({ product, materials: mr_materials, measurements 
     const theme = useTheme();
     const mode = theme.palette.mode;
 
-    const { data, setData, patch, errors, processing, recentlySuccessful } =
+    const { data, setData, post, errors, processing, recentlySuccessful } =
         useForm({
             name: product.name,
             type: product.type,
@@ -60,6 +61,7 @@ export default function Create({ product, materials: mr_materials, measurements 
             desc: product.desc ? product.desc : '',
             colors: product?.colors ? product.colors : [],
             materials: product?.materials ? product.materials : [],
+            _method: 'patch',
         });
 
     const formatter = new Intl.NumberFormat('id-ID', {
@@ -67,10 +69,18 @@ export default function Create({ product, materials: mr_materials, measurements 
         currency: 'IDR',
     });
 
+    const suggestionColors = [
+        'Merah',
+        'Biru',
+        'Kuning',
+    ];
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        patch(route('products.update', { id: product.id }));
+        post(route('products.update', { id: product.id }), {
+            forceFormData: true,
+        });
     };
 
 
@@ -299,50 +309,28 @@ export default function Create({ product, materials: mr_materials, measurements 
                                     </FormHelperText>
                                 )}
                             </Grid>
+
                             <Grid item xs={12} sm={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="packing_price" required>Warna</InputLabel>
-                                    {/* <Autocomplete
+                                    <InputLabel htmlFor="personal-colors" required>Warna</InputLabel>
+                                    <Autocomplete
+                                        id="colors"
                                         multiple
                                         freeSolo
-                                        id="fixed-tags-demo"
                                         value={data.colors}
+                                        options={suggestionColors}
+                                        name="colors"
+                                        placeholder="Write your colors"
+                                        error={errors.colors}
+                                        renderInput={(params) => <TextField {...params} />}
                                         onChange={(event, newValue) => {
-                                            setData([
-                                            ...fixedOptions,
-                                            ...newValue.filter((option) => !fixedOptions.includes(option)),
-                                            ]);
+                                            setData('colors', newValue)
                                         }}
-                                        renderValue={(values, getItemProps) =>
-                                            values.map((option, index) => {
-                                            const { key, ...itemProps } = getItemProps({ index });
-                                            return (
-                                                <Chip
-                                                    key={key}
-                                                    label={option.title}
-                                                    {...itemProps}
-                                                    disabled={fixedOptions.includes(option)}
-                                                />
-                                            );
-                                            })
-                                        }
-                                        style={{ width: 500 }}
-                                        renderInput={(params) => (
-                                            <TextField {...params} label="Fixed tag" placeholder="Favorites" />
-                                        )}
-                                    /> */}
-                                    <TextField
-                                        fullWidth
-                                        id="personal-color"
-                                        name="color"
-                                        onChange={(e) => setData('color', e.target.value)}
-                                        placeholder="Enter Warna"
-                                        autoFocus
                                     />
                                 </Stack>
-                                {errors.packing_price && (
-                                    <FormHelperText error id="packing_price-helper">
-                                        {errors.packing_price}
+                                {errors.colors && (
+                                    <FormHelperText error id="personal-colors-helper">
+                                        {errors.colors}
                                     </FormHelperText>
                                 )}
                             </Grid>
@@ -421,19 +409,10 @@ export default function Create({ product, materials: mr_materials, measurements 
                                     </FormHelperText>
                                 )}
                             </Grid>
-
                             <Grid item xs={12} sm={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="personal-img" required>Img</InputLabel>
-                                    <TextField
-                                        fullWidth
-                                        id="personal-img"
-                                        value={data.img}
-                                        name="img"
-                                        onChange={(e) => setData('img', e.target.value)}
-                                        placeholder="Enter Img"
-                                        autoFocus
-                                    />
+                                    <InputLabel htmlFor="personal-img">Image</InputLabel>
+                                    <InputFileUpload name="img" data={product.img} setData={setData} />
                                 </Stack>
                                 {errors.img && (
                                     <FormHelperText error id="personal-img-helper">

@@ -29,9 +29,14 @@ class Production extends Model
         'updated_by',
     ];
 
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class, 'employee_id');
+    }
+
     public function products()
     {
-        return $this->hasMany(SaleProduct::class);
+        return $this->hasMany(ProductionProduct::class);
     }
 
     function productSync($products)
@@ -45,14 +50,14 @@ class Production extends Model
                 'color' => $product['color'],
                 'quantity' => $product['quantity'],
                 'complete_quantity' => $product['complete_quantity'],
-                'complete_date' => $product['complete_date'],
+                'complete_date' => isset($product['complete_date']) ? date('Y-m-d H:i:s', strtotime($product['complete_date'])) : null,
             ]);
         }
     }
 
     public static function generateCode()
     {
-        $latest = Product::latest()->first();
+        $latest = Production::latest()->first();
         $count = $latest->id ?? 0;
         $uniqueId = str_pad($count + 1, 4, '0', STR_PAD_LEFT);
         $code = 'PRDN' . $uniqueId;

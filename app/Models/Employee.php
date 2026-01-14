@@ -38,7 +38,7 @@ class Employee extends Model
 
     public static function scopeActive($query)
     {
-        return $query->where('status', 'active');
+        return $query->where('is_active', true);
     }
 
     public static function generateCode()

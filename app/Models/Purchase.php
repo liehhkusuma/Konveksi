@@ -64,7 +64,7 @@ class Purchase extends Model
 
     public static function generateCode()
     {
-        $latest = Product::latest()->first();
+        $latest = Purchase::latest()->first();
         $count = $latest->id ?? 0;
         $uniqueId = str_pad($count + 1, 4, '0', STR_PAD_LEFT);
         $code = 'PRC' . $uniqueId;

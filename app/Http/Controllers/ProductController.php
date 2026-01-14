@@ -59,6 +59,11 @@ class ProductController extends Controller
         $validations = $request->validated();
         $fields = request()->only(array_keys($validations));
 
+        if ($request->hasFile('img')) {
+            $path = $request->img->store('products');
+            $fields['img'] = $path;
+        }
+
         $fields['code'] = Product::generateCode();
         $product = Product::create($fields);
         $product->materialSync($request->materials ?? []);
@@ -101,6 +106,13 @@ class ProductController extends Controller
 
         $validations = $request->validated();
         $fields = request()->only(array_keys($validations));
+
+        if (isset($fields['img']) && $request->hasFile('img')) {
+            $path = $request->img->store('products');
+            $fields['img'] = $path;
+        } else {
+            unset($fields['img']);
+        }
 
         $product = Product::findOrFail($id);
         $product->update($fields);

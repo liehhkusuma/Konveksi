@@ -52,6 +52,8 @@ export default function InputFileUpload({ name, data = '', setData }) {
             >
                 Upload
                 <VisuallyHiddenInput
+                    accept=".png, .jpeg, .jpg"
+                    max={2000}
                     name={name}
                     type="file"
                     onChange={(e) => {

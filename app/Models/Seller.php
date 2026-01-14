@@ -33,7 +33,7 @@ class Seller extends Model
 
     public static function generateCode()
     {
-        $latest = Employee::latest()->first();
+        $latest = Seller::latest()->first();
         $count = $latest->id ?? 0;
         $uniqueId = str_pad($count + 1, 4, '0', STR_PAD_LEFT);
         $code = 'EMP' . $uniqueId;

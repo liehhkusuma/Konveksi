@@ -42,35 +42,45 @@ import { Add, CloseCircle, Edit, Send, Trash } from 'iconsax-react';
 
 // ==============================|| USER PROFILE - PERSONAL ||============================== //
 
-export default function Create({ sale, products: mr_products, sellers }) {
+export default function Create({ products: mr_products, employees }) {
     const theme = useTheme();
     const mode = theme.palette.mode;
 
-    const { data, setData, patch, errors, processing, recentlySuccessful, transform } =
+    const { data, setData, post, errors, processing, recentlySuccessful, transform } =
         useForm({
-            seller_id: sale.seller_id,
-            sale_date: sale.sale_date ? new Date(sale.sale_date) : new Date(),
-            notes: sale.notes,
-            total_price: sale.total_price,
-            sub_price: sale.sub_price,
-            products: sale?.products ? sale.products : [],
+            employee_id: '',
+            production_date: new Date(),
+            notes: '',
+            status: 'progress',
+            sub_price: 0,
+            total_price: 0,
+            products: [],
         });
 
     transform((data) => ({
         ...data,
-        sale_date: data.sale_date ? format(data.sale_date, 'yyyy-MM-dd HH:mm:ss') : null
+        production_date: data.production_date ? format(data.production_date, 'yyyy-MM-dd HH:mm:ss') : null,
     }));
-
 
     const formatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
     });
 
+    const newProductTemplate  = {
+        product_id: '',
+        product: '',
+        color: '',
+        colors: [],
+        quantity: 1,
+        complete_quantity: 0,
+        complete_date: null,
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        patch(route('sales.update', { id: sale.id }));
+        post(route('productions.store'));
     };
 
     useEffect(() => {
@@ -79,8 +89,8 @@ export default function Create({ sale, products: mr_products, sellers }) {
             totalPrice += product.total_price;
         });
 
-        setData('total_price', totalPrice);
         setData('sub_price', totalPrice);
+        setData('total_price', totalPrice);
 
     }, [data.products]);
 
@@ -103,8 +113,9 @@ export default function Create({ sale, products: mr_products, sellers }) {
             const selected = mr_products.find(product => product.id == value);
             if (selected) {
                 newProducts[index].product = selected.name;
+                newProducts[index].colors = selected?.colors || [];
             } else {
-                newProducts[index].name = '';
+                newProducts[index].product = '';
             }
         }
 
@@ -118,56 +129,55 @@ export default function Create({ sale, products: mr_products, sellers }) {
         setData('products', newProducts);
     };
 
-
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Edit Sale
+                    Add Production
                 </h2>
             }>
-            <Head title="Edit Sale" />
-            <MainCard content={false} title="Edit Sale" sx={{ '& .MuiInputLabel-root': { fontSize: '0.875rem' } }}>
+            <Head title="Add Production" />
+            <MainCard content={false} title="Add Production" sx={{ '& .MuiInputLabel-root': { fontSize: '0.875rem' } }}>
                 <form onSubmit={handleSubmit}>
                     <Box sx={{ p: 2.5 }}>
                         <Grid container spacing={3}>
                             <Grid item xs={12} sm={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="seller_id" required>Seller</InputLabel>
+                                    <InputLabel htmlFor="employee_id" required>Employee</InputLabel>
                                     <Select
                                         fullWidth
-                                        value={data.seller_id}
-                                        name="seller_id"
-                                        onChange={(e) => setData('seller_id', e.target.value)}
+                                        value={data.employee_id}
+                                        name="employee_id"
+                                        onChange={(e) => setData('employee_id', e.target.value)}
                                     >
-                                        {sellers.map((seller, index) => (
-                                            <MenuItem key={index} value={seller.id} selected={data.seller_id == seller.id}>
-                                                {seller.name}
+                                        {employees.map((employee, index) => (
+                                            <MenuItem key={index} value={employee.id} selected={data.employee_id == employee.id}>
+                                                {employee.name}
                                             </MenuItem>
                                         ))}
                                     </Select>
                                 </Stack>
-                                {errors.seller_id && (
-                                    <FormHelperText error id="seller_id-helper">
-                                        {errors.seller_id}
+                                {errors.employee_id && (
+                                    <FormHelperText error id="employee_id-helper">
+                                        {errors.employee_id}
                                     </FormHelperText>
                                 )}
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="sale_date" required>Sale Date</InputLabel>
+                                    <InputLabel htmlFor="production_date" required>Production Date</InputLabel>
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                         <DatePicker
-                                            value={data.sale_date}
+                                            value={data.production_date}
                                             // minDate={minDate}
-                                            onChange={(e) => setData('sale_date', e)}
+                                            onChange={(e) => setData('production_date', e)}
                                             sx={{ width: 1 }}
                                         />
                                     </LocalizationProvider>
                                 </Stack>
-                                {errors.sale_date && (
-                                    <FormHelperText error id="personal-sale_date-helper">
-                                        {errors.sale_date}
+                                {errors.production_date && (
+                                    <FormHelperText error id="personal-production_date-helper">
+                                        {errors.production_date}
                                     </FormHelperText>
                                 )}
                             </Grid>
@@ -189,6 +199,26 @@ export default function Create({ sale, products: mr_products, sellers }) {
                                     </FormHelperText>
                                 )}
                             </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Stack spacing={1}>
+                                    <InputLabel htmlFor="status">Status</InputLabel>
+                                    <Select
+                                        fullWidth
+                                        value={data.status}
+                                        name="status"
+                                        onChange={(e) => setData('status', e.target.value)}
+                                    >
+                                        <MenuItem value="progress">Progress</MenuItem>
+                                        <MenuItem value="complete">Complete</MenuItem>
+                                        <MenuItem value="paid">Paid</MenuItem>
+                                    </Select>
+                                </Stack>
+                                {errors.status && (
+                                    <FormHelperText error id="personal-status-helper">
+                                        {errors.status}
+                                    </FormHelperText>
+                                )}
+                            </Grid>
                         </Grid>
                     </Box>
                     <Divider />
@@ -202,8 +232,8 @@ export default function Create({ sale, products: mr_products, sellers }) {
                                             <TableCell>Product</TableCell>
                                             <TableCell>Color</TableCell>
                                             <TableCell>Quantity</TableCell>
-                                            <TableCell>Price</TableCell>
-                                            <TableCell>Total</TableCell>
+                                            <TableCell>Complete</TableCell>
+                                            <TableCell>Complete Date</TableCell>
                                             <TableCell align="center">Action</TableCell>
                                         </TableRow>
                                     </TableHead>
@@ -237,9 +267,9 @@ export default function Create({ sale, products: mr_products, sellers }) {
                                                         name="color"
                                                         onChange={(e) => handleProductChange(index, 'color', e.target.value)}
                                                     >
-                                                        {mr_products.map((productItem, indexItem) => (
-                                                            <MenuItem key={indexItem} value={productItem.name} selected={product.name == productItem.name}>
-                                                                {productItem.name}
+                                                        {product.colors.map((colorItem, indexItem) => (
+                                                            <MenuItem key={indexItem} value={colorItem} selected={product.color == colorItem}>
+                                                                {colorItem}
                                                             </MenuItem>
                                                         ))}
                                                     </Select>
@@ -267,32 +297,39 @@ export default function Create({ sale, products: mr_products, sellers }) {
                                                     )}
                                                 </TableCell>
                                                 <TableCell >
-                                                    <NumericFormat
-                                                        fullWidth
-                                                        thousandSeparator="."
-                                                        decimalSeparator=","
-                                                        customInput={TextField}
-                                                        id="product-price"
-                                                        value={product.price}
-                                                        name="product-price"
-                                                        onValueChange={(values) => {
-                                                            handleProductChange(index, 'price', values.floatValue || 0);
-                                                        }}
-                                                        placeholder="Enter Price"
+                                                    <TextField
+                                                        type="number"
+                                                        id="complete_quantity"
+                                                        value={product.complete_quantity}
+                                                        name="complete_quantity"
+                                                        minimum={1}
+                                                        onChange={(e) => handleProductChange(index, 'complete_quantity', e.target.value)}
+                                                        placeholder="Enter Complete Quantity"
                                                         autoFocus
                                                     />
-                                                    {errors[`sales.${index}.products.${index}.price`] && (
-                                                        <FormHelperText error id="sale.price-helper">
-                                                            {errors[`sales.${index}.products.${index}.price`]}
+                                                    {errors[`products.${index}.complete_quantity`] && (
+                                                        <FormHelperText error id="product.complete_quantity-helper">
+                                                            {errors[`products.${index}.complete_quantity`]}
                                                         </FormHelperText>
                                                     )}
                                                 </TableCell>
-                                                <TableCell component="th" scope="row">
-                                                    <Stack direction="column" justifyContent="flex-end" spacing={2}>
-                                                        <Box sx={{ pl: 2 }}>
-                                                            <Typography>{formatter.format((product.total_price).toFixed(2))}</Typography>
-                                                        </Box>
+                                                <TableCell >
+                                                    <Stack spacing={1}>
+                                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                            <DatePicker
+                                                                value={product.complete_date}
+                                                                // minDate={minDate}
+                                                                onChange={(e) => handleProductChange(index, 'complete_date', e)}
+                                                                sx={{ width: 1 }}
+                                                            />
+                                                        </LocalizationProvider>
                                                     </Stack>
+
+                                                    {errors[`products.${index}.complete_date`] && (
+                                                        <FormHelperText error id="product.complete_date-helper">
+                                                            {errors[`products.${index}.complete_date`]}
+                                                        </FormHelperText>
+                                                    )}
                                                 </TableCell>
                                                 <TableCell align="center">
                                                     {data.products.length > 1 ? (
@@ -331,15 +368,7 @@ export default function Create({ sale, products: mr_products, sellers }) {
                                             color="primary"
                                             startIcon={<Add />}
                                             onClick={() =>
-                                                addProduct({
-                                                    product_id: '',
-                                                    color: '',
-                                                    product: '',
-                                                    measurement: '',
-                                                    quantity: 1,
-                                                    price: 0,
-                                                    total_price: 0,
-                                                })
+                                                addProduct(newProductTemplate)
                                             }
                                             variant="dashed"
                                             sx={{ bgcolor: 'transparent !important' }}
@@ -348,34 +377,19 @@ export default function Create({ sale, products: mr_products, sellers }) {
                                         </Button>
                                     </Box>
                                 </Grid>
-                                <Grid item xs={12} md={4}>
-                                    <Grid item xs={12}>
-                                        <Stack spacing={2}>
-                                            <Stack direction="row" justifyContent="space-between">
-                                                <Typography variant="subtitle1">Grand Total:</Typography>
-                                                <Typography variant="subtitle1" align="left">
-                                                    {' '}
-                                                    {data.total_price % 1 === 0
-                                                        ? formatter.format(data.total_price)
-                                                        : formatter.format(data.total_price.toFixed(2))}
-                                                </Typography>
-                                            </Stack>
-                                        </Stack>
-                                    </Grid>
-                                </Grid>
                             </Grid>
                         </>
                     </Box>
                     <Divider />
                     <Box sx={{ p: 2.5 }}>
                         <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 2.5 }}>
-                            <Link href={route('sales.index')}>
+                            <Link href={route('productions.index')}>
                                 <Button variant="outlined" color="secondary">
                                     Back
                                 </Button>
                             </Link>
                             <Button disabled={processing} type="submit" variant="contained">
-                                Update
+                                Create
                             </Button>
                             <Transition
                                 show={recentlySuccessful}
@@ -385,7 +399,7 @@ export default function Create({ sale, products: mr_products, sellers }) {
                                 leaveTo="opacity-0"
                             >
                                 <p className="text-sm text-gray-600">
-                                    Updated.
+                                    Created.
                                 </p>
                             </Transition>
                         </Stack>

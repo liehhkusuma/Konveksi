@@ -130,7 +130,7 @@ export default function Create({ products: mr_products, sellers }) {
                     <Box sx={{ p: 2.5 }}>
                         <Grid container spacing={3}>
                             <Grid item xs={12} sm={6}>
-                                <Stack spacing={0}>
+                                <Stack spacing={1}>
                                     <InputLabel htmlFor="seller_id" required>Seller</InputLabel>
                                     <Select
                                         fullWidth

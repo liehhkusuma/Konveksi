@@ -146,7 +146,7 @@ export default function Create({ materials: mr_materials, measurements, distribu
                     <Box sx={{ p: 2.5 }}>
                         <Grid container spacing={3}>
                             <Grid item xs={12} sm={6}>
-                                <Stack spacing={0}>
+                                <Stack spacing={1}>
                                     <InputLabel htmlFor="distributor_id" required>Distributor</InputLabel>
                                     <Select
                                         fullWidth

@@ -20,7 +20,8 @@ class ProductSeeder extends Seeder
                 'code' => 'PRD1' . time(),
                 'name' => 'Tas Polos',
                 'purchase_price' => 15000,
-                'price' => 20000,
+                'colors' => ['Merah', 'Biru'],
+                'price' => 40000,
             ],
         ];
 

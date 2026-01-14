@@ -16,7 +16,7 @@ class ProductRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'photo' => ['nullable', 'file', 'mimes:jpg,jpeg,png', 'max:2000'],
+            'img' => ['nullable', 'file', 'mimes:jpg,jpeg,png', 'max:2000'],
             'purchase_price' => ['required', 'numeric', 'min:0', function ($attribute, $value, $fail) {
                 $packing_price = $this->input('packing_price');
                 $other_price = $this->input('other_price');
@@ -37,7 +37,7 @@ class ProductRequest extends FormRequest
             'price' => ['required', 'numeric', 'min:0', 'gt:purchase_price'],
             'is_active' => ['required'],
             'desc' => ['nullable'],
-            // 'colors'   => 'required|array|min:1',
+            'colors'   => 'required|array|min:1',
             'materials'   => 'required|array|min:1',
             'materials.*.material_id' => 'required|exists:materials,id',
             'materials.*.measurement_id' => 'required|exists:measurements,id',

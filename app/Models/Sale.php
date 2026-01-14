@@ -63,7 +63,7 @@ class Sale extends Model
 
     public static function generateCode()
     {
-        $latest = Product::latest()->first();
+        $latest = Sale::latest()->first();
         $count = $latest->id ?? 0;
         $uniqueId = str_pad($count + 1, 4, '0', STR_PAD_LEFT);
         $code = 'SL' . $uniqueId;

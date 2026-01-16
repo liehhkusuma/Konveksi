@@ -14,7 +14,7 @@ import EcommerceDataChart from '@/sections/widget/chart/EcommerceDataChart';
 import WelcomeBanner from '@/sections/dashboard/default/WelcomeBanner';
 
 // assets
-import { ArrowDown, ArrowUp, Book, Calendar, CloudChange, Wallet3 } from 'iconsax-react';
+import { ArrowDown, ArrowUp, Book, Calendar, CloudChange, Wallet3, ShopAdd, ShoppingCart, Convert3DCube,EmptyWalletChange } from 'iconsax-react';
 
 export default function Dashboard({ sales, purchases, productions, payrolls }) {
     const theme = useTheme();
@@ -45,7 +45,7 @@ export default function Dashboard({ sales, purchases, productions, payrolls }) {
                 <EcommerceDataCard
                 title="Purchase"
                 count={formatter.format(purchases)}
-                iconPrimary={<Wallet3 />}
+                iconPrimary={<ShopAdd />}
                 percentage={
                     <Typography color="primary" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                     <ArrowUp size={16} style={{ transform: 'rotate(45deg)' }} /> 90.6%
@@ -60,7 +60,7 @@ export default function Dashboard({ sales, purchases, productions, payrolls }) {
                 title="Sales"
                 count={formatter.format(sales)}
                 color="success"
-                iconPrimary={<Book color={theme.palette.success.dark} />}
+                iconPrimary={<ShoppingCart color={theme.palette.success.dark} />}
                 percentage={
                     <Typography color="success.dark" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                     <ArrowDown size={16} style={{ transform: 'rotate(-45deg)' }} /> 70.6%
@@ -75,7 +75,7 @@ export default function Dashboard({ sales, purchases, productions, payrolls }) {
                 title="Production"
                 count={productions}
                 color="warning"
-                iconPrimary={<Calendar color={theme.palette.warning.darker} />}
+                iconPrimary={<Convert3DCube color={theme.palette.warning.darker} />}
                 percentage={
                     <Typography color="warning.darker" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                     <ArrowUp size={16} style={{ transform: 'rotate(45deg)' }} /> 84.6%
@@ -90,7 +90,7 @@ export default function Dashboard({ sales, purchases, productions, payrolls }) {
                 title="Payroll"
                 count={formatter.format(payrolls)}
                 color="error"
-                iconPrimary={<CloudChange color={theme.palette.error.dark} />}
+                iconPrimary={<EmptyWalletChange color={theme.palette.error.dark} />}
                 percentage={
                     <Typography color="error.dark" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                     <ArrowDown size={16} style={{ transform: 'rotate(45deg)' }} /> 20.6%

@@ -1,10 +1,16 @@
 import {
     Box1,
     Box2,
+    DirectInbox,
     KeySquare,
     Layer,
     User,
     SecurityUser,
+    ShopAdd,
+    ShoppingCart,
+    Convert3DCube,
+    EmptyWalletChange,
+    People,
     Setting2
 } from 'iconsax-react';
 // ==============================|| MENU ITEMS ||============================== //
@@ -16,11 +22,11 @@ const menuItems = {
             title: 'Master Data',
             type: 'group',
             children: [
-                { id: 'distributors', title: 'Distributor', type: 'item', url: route('distributors.index'), pathname: 'distributors', access: 'distributor_view', icon: Box1, target: true, },
+                { id: 'distributors', title: 'Distributor', type: 'item', url: route('distributors.index'), pathname: 'distributors', access: 'distributor_view', icon: DirectInbox, target: true, },
                 { id: 'material', title: 'Material', type: 'item', url: route('materials.index'), pathname: 'materials', access: 'material_view', icon: Layer, target: true },
                 { id: 'products', title: 'Product', type: 'item', url: route('products.index'), pathname: 'products', access: 'product_view', icon: Box1, target: true, },
                 { id: 'measurement', title: 'Measurement', type: 'item', url: route('measurements.index'), pathname: 'measurements', access: 'measurement_view', icon: Box2, target: true },
-                { id: 'employees', title: 'Employee', type: 'item', url: route('employees.index'), pathname: 'employees', access: 'employee_view', icon: User, target: true, },
+                { id: 'employees', title: 'Employee', type: 'item', url: route('employees.index'), pathname: 'employees', access: 'employee_view', icon: People, target: true, },
                 { id: 'sellers', title: 'Seller', type: 'item', url: route('sellers.index'), pathname: 'sellers', access: 'seller_view', icon: User, target: true, },
             ]
         },
@@ -29,10 +35,10 @@ const menuItems = {
             title: 'Transaction',
             type: 'group',
             children: [
-                { id: 'purchases', title: 'Purchase', type: 'item', url: route('purchases.index'), pathname: 'purchases', access: 'purchase_view', icon: Box1, target: true, },
-                { id: 'sales', title: 'Sale', type: 'item', url: route('sales.index'), pathname: 'sales', access: 'sale_view', icon: Box1, target: true, },
-                { id: 'production', title: 'Potongan', type: 'item', url: route('productions.index'), pathname: 'productions', access: 'production_view', icon: Box1, target: true, },
-                { id: 'payroll', title: 'Payroll', type: 'item', url: route('payrolls.index'), pathname: 'payrolls', access: 'payroll_view', icon: Box1, target: true, },
+                { id: 'purchases', title: 'Purchase', type: 'item', url: route('purchases.index'), pathname: 'purchases', access: 'purchase_view', icon: ShopAdd, target: true, },
+                { id: 'sales', title: 'Sale', type: 'item', url: route('sales.index'), pathname: 'sales', access: 'sale_view', icon: ShoppingCart, target: true, },
+                { id: 'production', title: 'Potongan', type: 'item', url: route('productions.index'), pathname: 'productions', access: 'production_view', icon: Convert3DCube, target: true, },
+                { id: 'payroll', title: 'Payroll', type: 'item', url: route('payrolls.index'), pathname: 'payrolls', access: 'payroll_view', icon: EmptyWalletChange, target: true, },
             ]
         },
         {

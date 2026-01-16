@@ -27,6 +27,8 @@ class ProductionRequest extends FormRequest
             'products.*.quantity' => 'required|numeric|gte:products.*.quantity',
             'products.*.complete_quantity' => 'required|numeric|lte:products.*.quantity',
             'products.*.complete_date' => ['nullable'],
+            'products.*.price' => 'required|numeric|min:0',
+            'products.*.total_price' => 'required|numeric|min:0',
         ];
     }
 }

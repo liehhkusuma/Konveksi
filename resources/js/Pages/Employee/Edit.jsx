@@ -169,55 +169,55 @@ export default function Create({ employee, positions }) {
                                     </FormHelperText>
                                 )}
                             </Grid>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <InputLabel htmlFor="address">Address</InputLabel>
-                            <TextField
-                                fullWidth
-                                multiline
-                                rows={5}
-                                id="address"
-                                name="address"
-                                placeholder="Enter address"
-                                value={data.address}
-                                onChange={(e) => setData('address', e.target.value)}
-                            />
-                            {errors.address && (
-                                <FormHelperText error id="personal-address-helper">
-                                    {errors.address}
-                                </FormHelperText>
-                            )}
-                        </Grid>
-                        {data.category === 'daily' ? (
                             <Grid item xs={12} sm={6}>
-                                <Stack spacing={1}>
-                                    <InputLabel htmlFor="salary" required>Salary</InputLabel>
-                                    <NumericFormat
-                                        thousandSeparator="."
-                                        decimalSeparator=","
-                                        customInput={TextField}
-                                        id="salary"
-                                        value={data.salary}
-                                        name="salary"
-                                        min={0}
-                                        max={100}
-                                        InputProps={{
-                                            startAdornment: 'Rp'
-                                        }}
-                                        onValueChange={(values) => {
-                                            setData('salary', values.floatValue);
-                                        }}
-                                        placeholder="Enter Salary"
-                                        autoFocus
-                                    />
-                                </Stack>
-                                {errors.salary && (
-                                    <FormHelperText error id="salary-helper">
-                                        {errors.salary}
+                                <InputLabel htmlFor="address">Address</InputLabel>
+                                <TextField
+                                    fullWidth
+                                    multiline
+                                    rows={5}
+                                    id="address"
+                                    name="address"
+                                    placeholder="Enter address"
+                                    value={data.address}
+                                    onChange={(e) => setData('address', e.target.value)}
+                                />
+                                {errors.address && (
+                                    <FormHelperText error id="personal-address-helper">
+                                        {errors.address}
                                     </FormHelperText>
                                 )}
                             </Grid>
-                        ) : null}
+                            {data.category === 'daily' ? (
+                                <Grid item xs={12} sm={6}>
+                                    <Stack spacing={1}>
+                                        <InputLabel htmlFor="salary" required>Salary</InputLabel>
+                                        <NumericFormat
+                                            thousandSeparator="."
+                                            decimalSeparator=","
+                                            customInput={TextField}
+                                            id="salary"
+                                            value={data.salary}
+                                            name="salary"
+                                            min={0}
+                                            max={100}
+                                            InputProps={{
+                                                startAdornment: 'Rp'
+                                            }}
+                                            onValueChange={(values) => {
+                                                setData('salary', values.floatValue);
+                                            }}
+                                            placeholder="Enter Salary"
+                                            autoFocus
+                                        />
+                                    </Stack>
+                                    {errors.salary && (
+                                        <FormHelperText error id="salary-helper">
+                                            {errors.salary}
+                                        </FormHelperText>
+                                    )}
+                                </Grid>
+                            ) : null}
+                        </Grid>
                     </Box>
                     <Divider />
                     <Box sx={{ p: 2.5 }}>

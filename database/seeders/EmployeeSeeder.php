@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Employee;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -13,34 +13,37 @@ class EmployeeSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = [
+        $employees = [
             [
-                'username' => 'hitogami',
                 'name' => 'Hitogami',
-                'email' => 'hitogami@gmail.com',
-                'password' => Hash::make('admin'),
+                'category' => 'daily',
+                'type' => 'internal',
+                'phone' => '081237127321',
+                'salary' => 50000,
             ],
             [
-                'username' => 'rifana',
-                'name' => 'Rifana',
-                'email' => 'rifana@gmail.com',
-                'password' => Hash::make('admin'),
+                'name' => 'Perugius',
+                'category' => 'daily',
+                'type' => 'external',
+                'phone' => '081237127123',
+                'salary' => 100000,
             ],
             [
-                'username' => 'ace',
-                'name' => 'Ace',
-                'email' => 'ace@gmail.com',
-                'password' => Hash::make('admin'),
+                'name' => 'Rudeus',
+                'category' => 'project',
+                'type' => 'default',
+                'phone' => '081237127345',
+                'salary' => 25000,
             ],
         ];
 
         // generate
-        foreach ($users as $user) {
-            $exist = User::where('email',$user['email'])->first();
-            if(!$exist){
-                $exist = User::create($user);
+        foreach ($employees as $employee) {
+            $exist = Employee::where('name', $employee['name'])->first();
+            if (!$exist) {
+                $employee['code'] = Employee::generateCode();
+                $exist = Employee::create($employee);
             }
-            $exist->roles()->sync([1]);
         }
     }
 }

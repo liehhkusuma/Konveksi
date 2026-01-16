@@ -1,4 +1,4 @@
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, useForm, usePage, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
 // material-ui
@@ -6,6 +6,7 @@ import { alpha, useTheme } from '@mui/material/styles';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import FormHelperText from '@mui/material/FormHelperText';
@@ -20,7 +21,6 @@ import Switch from '@mui/material/Switch';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
 import TableBody from '@mui/material/TableBody';
-import TableFooter from '@mui/material/TableFooter';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
@@ -39,16 +39,17 @@ import AuthenticatedLayout from '@/layouts/Dashboard';
 import MainCard from '@/components/MainCard';
 import { ThemeMode } from '@/config';
 import { Transition } from '@headlessui/react';
+import { useProductionsByEmployee } from '@/hooks/useProductionsByEmployee'
 
 import { Add, CloseCircle, Edit, Send, Trash } from 'iconsax-react';
+import { TableFooter } from '@mui/material';
+import { set } from 'lodash';
 
 // ==============================|| USER PROFILE - PERSONAL ||============================== //
 
-export default function Create({ payroll, products: mr_products, employees, productions }) {
+export default function Create({ payroll, products: mr_products, employees, colors }) {
     const theme = useTheme();
     const mode = theme.palette.mode;
-
-    const [selectedProductions, setSelectedProductions] = useState([]);
 
     const { data, setData, patch, errors, processing, recentlySuccessful, transform } =
         useForm({
@@ -69,6 +70,8 @@ export default function Create({ payroll, products: mr_products, employees, prod
         payroll_date: data.payroll_date ? format(data.payroll_date, 'yyyy-MM-dd HH:mm:ss') : null
     }));
 
+    const { productions, loading } = useProductionsByEmployee(data.employee_id);
+    const [selectedProductions, setSelectedProductions] = useState([]);
     const formatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
@@ -86,10 +89,31 @@ export default function Create({ payroll, products: mr_products, employees, prod
             totalPrice += product.total_price;
         });
 
-        setData('total_price', totalPrice);
         setData('sub_price', totalPrice);
 
-    }, [data.products]);
+        if(data.minus){
+            totalPrice = totalPrice - data.minus;
+        }
+        if(data.cashbon){
+            totalPrice = totalPrice - data.cashbon;
+        }
+        if(data.tip){
+            totalPrice = totalPrice + data.tip;
+        }
+
+        setData('total_price', totalPrice);
+
+    }, [data]);
+
+    // useEffect(() => {
+    //     const selected = employees.find(employee => employee.id == data.employee_id);
+    //     if(selected){
+    //         setData('cashbon', selected.cashbon || 0);
+    //     }
+    //     console.log(selected)
+    //     setData('products', []);
+    //     setSelectedProductions([]);
+    // }, [data.employee_id]);
 
     const addProduct = (product) => {
         setData('products', [...data.products, product]);
@@ -124,6 +148,20 @@ export default function Create({ payroll, products: mr_products, employees, prod
         setData('products', newProducts);
     };
 
+    const handleChange = (event) => {
+        const { value } = event.target;
+        setSelectedProductions( typeof value === 'string' ? value.split(',') : value);
+        const allProducts = getProductsFromSelected(value, productions);
+        console.log(allProducts);
+        setData('products', allProducts);
+
+    };
+
+    function getProductsFromSelected(selectedIds, productions) {
+        return productions
+            .filter(pr => selectedIds.includes(pr.id))
+            .flatMap(pr => pr.products);
+    }
 
     return (
         <AuthenticatedLayout
@@ -139,7 +177,7 @@ export default function Create({ payroll, products: mr_products, employees, prod
                         <Grid container spacing={3}>
                             <Grid item xs={12} sm={6}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="employee_id" required>Employee</InputLabel>
+                                    <InputLabel htmlFor="employee_id" required disabled>Employee</InputLabel>
                                     <Select
                                         fullWidth
                                         value={data.employee_id}
@@ -180,25 +218,26 @@ export default function Create({ payroll, products: mr_products, employees, prod
                             {/* <Grid item xs={12}>
                                 <Stack spacing={1}>
                                     <InputLabel htmlFor="personal-production" required>Production</InputLabel>
-                                    <Autocomplete
-                                        id="production"
+                                    <Select
+                                        labelId="purchase-requests-label"
                                         multiple
                                         value={selectedProductions}
-                                        options={productions}
-                                        getOptionLabel={(option) => option.employee.name + " - " + option.code}
-                                        renderOption={(props, option) => (
-                                        <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                                            {option.employee.name} - {option.code}
-                                        </Box>
+                                        onChange={handleChange}
+                                        renderValue={(selected) => (
+                                            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                                                {selected.map((value) => (
+                                                    <Chip key={value} label={productions.find((o) => o.id === value)?.code ?? value} />
+                                                ))}
+                                            </Box>
                                         )}
-                                        name="production"
-                                        placeholder="Select your production"
-                                        error={errors.production}
-                                        renderInput={(params) => <TextField {...params} />}
-                                        onChange={(event, newValue) => {
-                                            setSelectedProductions(newValue)
-                                        }}
-                                    />
+                                        disabled={loading || !productions.length}
+                                    >
+                                        {!loading && productions.map((production) => (
+                                            <MenuItem key={production.id} value={production.id}>
+                                                {production.code}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
                                 </Stack>
                                 {errors.production && (
                                     <FormHelperText error id="personal-production-helper">
@@ -254,9 +293,9 @@ export default function Create({ payroll, products: mr_products, employees, prod
                                                         name="color"
                                                         onChange={(e) => handleProductChange(index, 'color', e.target.value)}
                                                     >
-                                                        {mr_products.map((productItem, indexItem) => (
-                                                            <MenuItem key={indexItem} value={productItem.name} selected={product.name == productItem.name}>
-                                                                {productItem.name}
+                                                        {colors.map((colorItem, indexItem) => (
+                                                            <MenuItem key={indexItem} value={colorItem} selected={product.color == colorItem}>
+                                                                {colorItem}
                                                             </MenuItem>
                                                         ))}
                                                     </Select>
@@ -392,28 +431,28 @@ export default function Create({ payroll, products: mr_products, employees, prod
                                     <Grid item xs={12}>
                                         <Stack spacing={2}>
                                             <Stack spacing={0}>
-                                                <InputLabel htmlFor="sub_total" required>Total</InputLabel>
+                                                <InputLabel htmlFor="sub_price" required>Total</InputLabel>
                                                 <NumericFormat
                                                     thousandSeparator="."
                                                     decimalSeparator=","
                                                     customInput={TextField}
-                                                    id="sub_total"
-                                                    value={data.sub_total}
-                                                    name="sub_total"
+                                                    id="sub_price"
+                                                    value={data.sub_price}
+                                                    name="sub_price"
                                                     min={0}
                                                     max={100}
                                                     InputProps={{
                                                         startAdornment: 'Rp'
                                                     }}
                                                     onValueChange={(values) => {
-                                                        setData('sub_total', values.floatValue);
+                                                        setData('sub_price', values.floatValue);
                                                     }}
                                                     placeholder="Enter Total"
                                                     autoFocus
                                                 />
-                                                {errors.sub_total && (
-                                                    <FormHelperText error id="sub_total-helper">
-                                                        {errors.sub_total}
+                                                {errors.sub_price && (
+                                                    <FormHelperText error id="sub_price-helper">
+                                                        {errors.sub_price}
                                                     </FormHelperText>
                                                 )}
                                             </Stack>
@@ -499,29 +538,29 @@ export default function Create({ payroll, products: mr_products, employees, prod
                                                 )}
                                             </Stack>
                                             <Stack spacing={0}>
-                                                <InputLabel htmlFor="remains" required>Remains</InputLabel>
+                                                <InputLabel htmlFor="total_price" required>Sisa</InputLabel>
                                                 <NumericFormat
                                                     thousandSeparator="."
                                                     decimalSeparator=","
                                                     customInput={TextField}
-                                                    id="remains"
-                                                    value={data.remains}
-                                                    name="remains"
+                                                    id="total_price"
+                                                    value={data.total_price}
+                                                    name="total_price"
                                                     min={0}
                                                     max={100}
                                                     InputProps={{
                                                         startAdornment: 'Rp'
                                                     }}
                                                     onValueChange={(values) => {
-                                                        setData('remains', values.floatValue);
+                                                        setData('total_price', values.floatValue);
                                                     }}
                                                     placeholder="Enter Total"
                                                     autoFocus
                                                 />
 
-                                                {errors.remains && (
-                                                    <FormHelperText error id="remains-helper">
-                                                        {errors.remains}
+                                                {errors.total_price && (
+                                                    <FormHelperText error id="total_price-helper">
+                                                        {errors.total_price}
                                                     </FormHelperText>
                                                 )}
                                             </Stack>

@@ -225,9 +225,9 @@ export default function RowDragDrop({ payrolls }) {
         {
             id: 'salary',
             header: 'Salary',
-            accessorKey: 'employee.salary',
+            accessorKey: 'sub_price',
             cell: ({ row }) => {
-                return formatter.format(row.original.employee?.salary);
+                return formatter.format(row.original.sub_price);
             }
         },
         {
@@ -257,9 +257,9 @@ export default function RowDragDrop({ payrolls }) {
         {
             id: 'cashbon',
             header: 'Sisa',
-            accessorKey: 'employee.cashbon',
+            accessorKey: 'total_price',
             cell: ({ row }) => {
-                return formatter.format(row.original.employee?.cashbon);
+                return formatter.format(row.original.total_price);
             }
         },
         {

@@ -120,4 +120,15 @@ class ProductionController extends Controller
         $production->delete();
         return Redirect::route('productions.index');
     }
+
+    /**
+     * Display the specified resource.
+     */
+    public function productions(string $id)
+    {
+        $productions = Production::with(['products', 'employee'])->where('employee_id', $id)->get();
+        return response()->json([
+            'productions' => $productions,
+        ]);
+    }
 }

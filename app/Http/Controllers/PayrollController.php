@@ -45,12 +45,12 @@ class PayrollController extends Controller
 
         $products  = Product::active()->get();
         $employees  = Employee::active()->get();
-        $productions = Production::with(['products', 'employee'])->where('status', 'complete')->get();
+        $colors = Product::query()->pluck('colors')->flatten()->unique()->values()->toArray();
         return Inertia::render('Payroll/Create', [
             'status' => session('status'),
             'products' => $products,
             'employees' => $employees,
-            'productions' => $productions,
+            'colors' => $colors,
         ]);
     }
 
@@ -89,13 +89,13 @@ class PayrollController extends Controller
         $payroll = Payroll::with(['products'])->findOrFail($id);
         $products  = Product::active()->get();
         $employees  = Employee::active()->get();
-        $productions = Production::with(['products', 'employee'])->where('status', 'complete')->get();
+        $colors = Product::query()->pluck('colors')->flatten()->unique()->values()->toArray();
         return Inertia::render('Payroll/Edit', [
             'status' => session('status'),
             'payroll' => $payroll,
             'products' => $products,
             'employees' => $employees,
-            'productions' => $productions,
+            'colors' => $colors,
         ]);
     }
 

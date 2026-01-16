@@ -15,6 +15,9 @@ class ProductionProduct extends Model
         return [
             'production_id' => 'integer',
             'product_id' => 'integer',
+            'quantity' => 'double',
+            'complete_quantity' => 'double',
+            'price' => 'double',
             'total_price' => 'double',
         ];
     }
@@ -27,5 +30,7 @@ class ProductionProduct extends Model
         'quantity',
         'complete_quantity',
         'complete_date',
+        'price',
+        'total_price',
     ];
 }

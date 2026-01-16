@@ -75,6 +75,7 @@ export default function Create({ products: mr_products, employees }) {
         quantity: 1,
         complete_quantity: 0,
         complete_date: null,
+        price: 0,
     }
 
     const handleSubmit = (e) => {
@@ -93,6 +94,10 @@ export default function Create({ products: mr_products, employees }) {
         setData('total_price', totalPrice);
 
     }, [data.products]);
+
+    useEffect(() => {
+        setData('products', []);
+    }, [data.employee_id]);
 
     const addProduct = (product) => {
         setData('products', [...data.products, product]);
@@ -114,16 +119,22 @@ export default function Create({ products: mr_products, employees }) {
             if (selected) {
                 newProducts[index].product = selected.name;
                 newProducts[index].colors = selected?.colors || [];
+                newProducts[index].price = selected.price;
+                newProducts[index].total_price = selected.price * newProducts[index].complete_quantity;
+                const selectedEmployee = employees.find(employee => employee.id == data.employee_id);
+                if(selectedEmployee){
+                    newProducts[index].price = selectedEmployee?.type === 'external' ? selected.external_production_price : selected.internal_production_price;
+                }
             } else {
                 newProducts[index].product = '';
             }
         }
 
         if (field === 'price') {
-            newProducts[index].total_price = newProducts[index].price * newProducts[index].quantity;
+            newProducts[index].total_price = newProducts[index].price * newProducts[index].complete_quantity;
         }
-        if (field === 'quantity') {
-            newProducts[index].total_price = newProducts[index].price * newProducts[index].quantity;
+        if (field === 'complete_quantity') {
+            newProducts[index].total_price = newProducts[index].price * newProducts[index].complete_quantity;
         }
 
         setData('products', newProducts);
@@ -234,6 +245,7 @@ export default function Create({ products: mr_products, employees }) {
                                             <TableCell>Quantity</TableCell>
                                             <TableCell>Complete</TableCell>
                                             <TableCell>Complete Date</TableCell>
+                                            <TableCell>Price</TableCell>
                                             <TableCell align="center">Action</TableCell>
                                         </TableRow>
                                     </TableHead>
@@ -330,6 +342,13 @@ export default function Create({ products: mr_products, employees }) {
                                                             {errors[`products.${index}.complete_date`]}
                                                         </FormHelperText>
                                                     )}
+                                                </TableCell>
+                                                <TableCell component="th" scope="row">
+                                                    <Stack direction="column" justifyContent="flex-end" spacing={2}>
+                                                        <Box sx={{ pl: 2 }}>
+                                                            <Typography>{formatter.format((product.total_price||0).toFixed(2))}</Typography>
+                                                        </Box>
+                                                    </Stack>
                                                 </TableCell>
                                                 <TableCell align="center">
                                                     {data.products.length > 1 ? (

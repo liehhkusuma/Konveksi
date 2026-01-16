@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('color', 150)->nullable();
             $table->double('quantity')->default(0);
             $table->double('complete_quantity')->default(0);
+            $table->double('price')->default(0);
+            $table->double('total_price')->default(0);
             $table->date('complete_date')->nullable();
 
             $table->foreign('production_id')

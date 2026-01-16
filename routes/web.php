@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ConfigurationController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DistributorController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\MainController;
@@ -37,9 +38,11 @@ Route::get('/test', [MainController::class, 'test'])->name('test');
 
 Route::prefix('backend')->middleware('auth')->group(function () {
 
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->middleware(['auth', 'verified'])->name('dashboard');
+    // Route::get('/dashboard', function () {
+    //     return Inertia::render('Dashboard');
+    // })->middleware(['auth', 'verified'])->name('dashboard');
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/profile/{tab}', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -89,6 +92,7 @@ Route::prefix('backend')->middleware('auth')->group(function () {
     Route::resource('sales', SaleController::class)->missing(function (Request $request) {
         return Redirect::route('dashboard');
     });
+    Route::get('/productions/{id}/employee', [ProductionController::class, 'productions'])->name('productions.employee');
     Route::resource('productions', ProductionController::class)->missing(function (Request $request) {
         return Redirect::route('dashboard');
     });

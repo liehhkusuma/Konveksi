@@ -49,6 +49,8 @@ class Production extends Model
                 'product' => $product['product'],
                 'color' => $product['color'],
                 'quantity' => $product['quantity'],
+                'price' => $product['price'],
+                'total_price' => $product['price'] * $product['complete_quantity'],
                 'complete_quantity' => $product['complete_quantity'],
                 'complete_date' => isset($product['complete_date']) ? date('Y-m-d H:i:s', strtotime($product['complete_date'])) : null,
             ]);

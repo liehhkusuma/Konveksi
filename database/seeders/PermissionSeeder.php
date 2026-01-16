@@ -29,6 +29,7 @@ class PermissionSeeder extends Seeder
             'purchase' => 13,
             'sale' => 14,
             'production' => 15,
+            'payroll' => 16,
         ];
         foreach ($categories as $key => $value) {
             $exist = PermissionCategory::where('title', $key)->first();
@@ -132,6 +133,12 @@ class PermissionSeeder extends Seeder
             ['permission_category_id' => $categories['production'], 'title' => 'production_edit'],
             ['permission_category_id' => $categories['production'], 'title' => 'production_destroy'],
             // ['permission_category_id' => $categories['production'], 'title' => 'production_replicate'],
+
+            ['permission_category_id' => $categories['payroll'], 'title' => 'payroll_view'],
+            ['permission_category_id' => $categories['payroll'], 'title' => 'payroll_create'],
+            ['permission_category_id' => $categories['payroll'], 'title' => 'payroll_edit'],
+            ['permission_category_id' => $categories['payroll'], 'title' => 'payroll_destroy'],
+            // ['permission_category_id' => $categories['payroll'], 'title' => 'payroll_replicate'],
 
 
         ];

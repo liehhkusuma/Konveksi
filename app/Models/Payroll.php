@@ -39,9 +39,14 @@ class Payroll extends Model
         'updated_by',
     ];
 
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class, 'employee_id');
+    }
+
     public function products()
     {
-        return $this->hasMany(SaleProduct::class);
+        return $this->hasMany(PayrollProduct::class);
     }
 
     function productSync($products)

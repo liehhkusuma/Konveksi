@@ -22,6 +22,7 @@ return new class extends Migration
             $table->mediumText('address')->nullable();
             $table->double('cashbon')->default(0);
             $table->double('salary')->default(0);
+            $table->double('remaining_salary')->default(0);
             $table->boolean('is_active')->default(true);
 
             // $table->foreign('position_id')

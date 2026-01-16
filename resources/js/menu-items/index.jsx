@@ -32,6 +32,7 @@ const menuItems = {
                 { id: 'purchases', title: 'Purchase', type: 'item', url: route('purchases.index'), pathname: 'purchases', access: 'purchase_view', icon: Box1, target: true, },
                 { id: 'sales', title: 'Sale', type: 'item', url: route('sales.index'), pathname: 'sales', access: 'sale_view', icon: Box1, target: true, },
                 { id: 'production', title: 'Potongan', type: 'item', url: route('productions.index'), pathname: 'productions', access: 'production_view', icon: Box1, target: true, },
+                { id: 'payroll', title: 'Payroll', type: 'item', url: route('payrolls.index'), pathname: 'payrolls', access: 'payroll_view', icon: Box1, target: true, },
             ]
         },
         {

@@ -11,6 +11,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\MeasurementController;
+use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\ProductionController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SaleController;
@@ -89,6 +90,9 @@ Route::prefix('backend')->middleware('auth')->group(function () {
         return Redirect::route('dashboard');
     });
     Route::resource('productions', ProductionController::class)->missing(function (Request $request) {
+        return Redirect::route('dashboard');
+    });
+    Route::resource('payrolls', PayrollController::class)->missing(function (Request $request) {
         return Redirect::route('dashboard');
     });
 });

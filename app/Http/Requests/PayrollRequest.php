@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File;
 
-class ProductionRequest extends FormRequest
+class PayrollRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -17,16 +17,21 @@ class ProductionRequest extends FormRequest
     {
         return [
             'employee_id' => ['required', 'exists:employees,id'],
-            'production_date' => ['required', Rule::date()->format('Y-m-d H:i:s')],
-            'status' => ['nullable', 'string'],
+            'payroll_date' => ['required', Rule::date()->format('Y-m-d H:i:s')],
+            'sub_price' => ['required', 'numeric', 'min:0'],
+            'minus' => ['required', 'numeric', 'min:0'],
+            'cashbon' => ['required', 'numeric', 'min:0'],
+            'tip' => ['required', 'numeric', 'min:0'],
+            'total_price' => ['required', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string'],
+            // 'remains' => ['required', 'numeric', 'min:0'],
             'products'   => 'required|array|min:1',
             'products.*.product_id' => 'required|exists:products,id',
+            // 'products.*.production_id' => 'required|exists:productions,id',
             'products.*.product' => 'required|string|max:150',
             'products.*.color' => 'required|string|max:150',
-            'products.*.quantity' => 'required|numeric|gte:products.*.quantity',
-            'products.*.complete_quantity' => 'required|numeric|lte:products.*.quantity',
-            'products.*.complete_date' => ['nullable'],
+            'products.*.quantity' => 'required|numeric',
+            'products.*.price' => 'required|numeric|min:0',
         ];
     }
 }

@@ -27,6 +27,7 @@ class Employee extends Model
         'phone',
         'cashbon',
         'salary',
+        'remaining_salary',
         'address',
         'is_active',
     ];

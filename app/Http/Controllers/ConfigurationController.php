@@ -40,10 +40,8 @@ class ConfigurationController extends Controller
         $this->authorize('configuration_create');
 
         $customers = Customer::get();
-        $invoices = Invoice::where('type', 'default')->where('status', '!=', 'paid')->get();
         return Inertia::render('Configuration/Create', [
             'customers' => $customers,
-            'invoices' => $invoices,
             'status' => session('status'),
         ]);
     }
